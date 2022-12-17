@@ -67,4 +67,9 @@ public final class LongArrayTag extends ArrayTag<long[],Long> {
 	public String toString() {
 		return Arrays.toString(value);
 	}
+
+	@Override
+	public int payloadSize() {
+		return 4*length()*8;
+	}
 }

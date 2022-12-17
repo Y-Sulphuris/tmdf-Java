@@ -29,6 +29,11 @@ public final class StringUTF16Tag extends StringTag {
 		return TmdfUtils.sum(bb.array(),new byte[]{0,0});
 	}
 
+	@Override
+	public int payloadSize() {
+		return length()*2+2;
+	}
+
 	public CharArrayTag toCharArrayTag() {
 		return new CharArrayTag(getValue().toCharArray());
 	}

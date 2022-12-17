@@ -23,6 +23,11 @@ public final class StringUTF8Tag extends StringTag {
 		return TmdfUtils.sum((getValue() + '\0').getBytes(StandardCharsets.UTF_8));
 	}
 
+	@Override
+	public int payloadSize() {
+		return length()+1;
+	}
+
 	public ByteArrayTag toByteArrayTag() {
 		return new ByteArrayTag((getValue() + '\0').getBytes(StandardCharsets.UTF_8));
 	}

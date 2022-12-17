@@ -69,4 +69,9 @@ public final class FloatArrayTag extends ArrayTag<float[],Float> {
 	public String toString() {
 		return Arrays.toString(value);
 	}
+
+	@Override
+	public int payloadSize() {
+		return 4+length()*4;
+	}
 }

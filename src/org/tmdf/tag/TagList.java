@@ -69,6 +69,17 @@ public final class TagList extends CollectionTag<List<Tag<?>>> {
 		return bytes;
 	}
 
+	@Override
+	public int payloadSize() {
+		int size = 0;
+		for (Tag<?> tag: list){
+			size += tag.tagSize("");
+		}
+		size++;
+
+		return size;
+	}
+
 
 	public boolean isEmpty() {
 		return list.isEmpty();

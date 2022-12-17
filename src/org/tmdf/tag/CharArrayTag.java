@@ -70,4 +70,9 @@ public final class CharArrayTag extends ArrayTag<char[],Character> {
 	public String toString() {
 		return Arrays.toString(value);
 	}
+
+	@Override
+	public int payloadSize() {
+		return 4+length()*2;
+	}
 }

@@ -65,4 +65,9 @@ public final class DoubleArrayTag extends ArrayTag<double[], Double> {
 		return Arrays.toString(value);
 	}
 
+	@Override
+	public int payloadSize() {
+		return 4*length()*8;
+	}
+
 }

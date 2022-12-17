@@ -59,4 +59,13 @@ public final class TagArray extends ArrayTag<Tag<?>[],Tag<?>> {
 	public String toString() {
 		return Arrays.toString(value);
 	}
+
+	@Override
+	public int payloadSize() {
+		int size = 4;
+		for (Tag<?> tag : value) {
+			size += tag.tagSize("");
+		}
+		return size;
+	}
 }

@@ -27,7 +27,7 @@ public final class TmdfUtils {
 	}
 
 	public static byte[] encodeUTF8(String str){
-		return str.getBytes(UTF8_CHARSET);
+		return checkUTF8(str).getBytes(UTF8_CHARSET);
 	}
 	public static String decodeUTF8(byte[] bytes) {
 		return new String(bytes, UTF8_CHARSET);
@@ -74,5 +74,9 @@ public final class TmdfUtils {
 	}
 
 
+	public static int TMDFNameByteLength(String name) {
+		name = checkUTF8(name);
+		return name.length()+1;
+	}
 }
 

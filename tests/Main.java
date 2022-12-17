@@ -14,10 +14,16 @@ public class Main {
 		map.put("off",new TagMap()
 			.put("one",new DoubleTag(1))
 			.put("doubleDich",doubleTag));
-		byte[] bytes = doubleTag.toByteArray("map");
+		byte[] bytes = map.toByteArray("map");
 
 		System.out.println(doubleTag);
 		System.out.println(Arrays.toString(bytes));
 		System.out.println(new TagReader(bytes).nextUnnamedTag());
+		//
+
+
+
+		System.out.println(bytes.length+" "+" "+map.tagSize("map"));
+
 	}
 }

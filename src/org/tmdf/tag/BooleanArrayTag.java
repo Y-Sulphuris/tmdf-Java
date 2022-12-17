@@ -65,4 +65,9 @@ public final class BooleanArrayTag extends ArrayTag<boolean[],Boolean> {
 	public String toString() {
 		return Arrays.toString(value);
 	}
+
+	@Override
+	public int payloadSize() {
+		return 4+length();
+	}
 }

@@ -69,6 +69,16 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> {
 		return bytes;
 	}
 
+	@Override
+	public int payloadSize() {
+		int size = 0;
+		for (Map.Entry<String, Tag<?>> entry: map.entrySet()){
+			size += entry.getValue().tagSize(entry.getKey());
+		}
+		size++;
+
+		return size;
+	}
 
 
 	public boolean isEmpty() {

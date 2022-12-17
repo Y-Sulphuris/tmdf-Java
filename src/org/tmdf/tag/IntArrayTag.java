@@ -67,4 +67,9 @@ public final class IntArrayTag extends ArrayTag<int[],Integer> {
 	public String toString() {
 		return Arrays.toString(value);
 	}
+
+	@Override
+	public int payloadSize() {
+		return 4+length()*4;
+	}
 }

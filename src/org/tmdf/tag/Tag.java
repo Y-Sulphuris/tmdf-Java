@@ -20,8 +20,8 @@ public abstract class Tag<T> implements Cloneable{
 		if (x instanceof Float) return new FloatTag((Float) x);
 		if (x instanceof Double) return new DoubleTag((Double) x);
 		if (x instanceof Boolean) return BooleanTag.of((Boolean) x);
-		if (x instanceof List) return new TagList((List<Tag<?>>) x);
-		if (x instanceof Map) return new TagMap((Map<String, Tag<?>>) x);
+		//if (x instanceof List) return new TagList((List<Tag<?>>) x);
+		//if (x instanceof Map) return new TagMap((Map<String, Tag<?>>) x);
 		if (x instanceof String) {
 			String s = (String) x;
 			if (s.contains("\0")) {
@@ -56,6 +56,11 @@ public abstract class Tag<T> implements Cloneable{
 			@Override
 			public String toString() {
 				return "Tag<void>";
+			}
+
+			@Override
+			public int payloadSize() {
+				return 0;
 			}
 		};
 	}
@@ -134,4 +139,8 @@ public abstract class Tag<T> implements Cloneable{
 		return getValue().toString();
 	}
 
+	public final int tagSize(String name) {
+		return 1 + TmdfUtils.TMDFNameByteLength(name) + payloadSize();
+	}
+	public abstract int payloadSize();
 }

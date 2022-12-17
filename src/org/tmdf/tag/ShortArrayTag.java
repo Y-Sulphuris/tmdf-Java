@@ -67,4 +67,10 @@ public final class ShortArrayTag extends ArrayTag<short[], Short> {
 		return Arrays.toString(value);
 	}
 
+	@Override
+	public int payloadSize() {
+		return 4+length()*2;
+	}
+
+
 }

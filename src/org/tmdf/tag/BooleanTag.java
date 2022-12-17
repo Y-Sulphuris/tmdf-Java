@@ -37,6 +37,11 @@ public final class BooleanTag extends Tag<Boolean>{
 		return new byte[]{(byte) (value?1:0)};
 	}
 
+	@Override
+	public int payloadSize() {
+		return 1;
+	}
+
 
 	public int compareTo(Boolean b) {
 		return getValue().compareTo(b);

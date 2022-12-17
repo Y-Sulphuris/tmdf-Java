@@ -53,4 +53,9 @@ public final class ByteArrayTag extends ArrayTag<byte[],Byte> {
 	public String toString() {
 		return Arrays.toString(value);
 	}
+
+	@Override
+	public int payloadSize() {
+		return 4*length();
+	}
 }
