@@ -46,7 +46,7 @@ public final class FloatArrayTag extends ArrayTag<float[],Float> {
 
 	@Override
 	public FloatArrayTag clone() {
-		return new FloatArrayTag(value);
+		return new FloatArrayTag(value.clone());
 	}
 
 	@Override

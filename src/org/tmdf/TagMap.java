@@ -12,10 +12,10 @@ import java.util.function.Function;
  * Type: 10<br>
  * Payload: unordered array of named tags. Always null-terminated (size not defined)
  */
-public final class TagMap extends CollectionTag<Map<String, Tag<?>>> {
-	private Map<String,Tag<?>> map;
+public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
+	private HashMap<String,Tag<?>> map;
 
-	public TagMap(Map<String, Tag<?>> map) {
+	public TagMap(HashMap<String, Tag<?>> map) {
 		this.map = map;
 	}
 	public TagMap() {
@@ -47,18 +47,18 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> {
 	}
 
 	@Override
-	public Map<String, Tag<?>> getValue() {
+	public HashMap<String, Tag<?>> getValue() {
 		return map;
 	}
 
 	@Override
-	public void setValue(Map<String, Tag<?>> map) {
+	public void setValue(HashMap<String, Tag<?>> map) {
 		this.map = map;
 	}
 
 	@Override
-	public Tag<Map<String, Tag<?>>> clone() {
-		return new TagMap(map);
+	public Tag<HashMap<String, Tag<?>>> clone() {
+		return new TagMap((HashMap<String, Tag<?>>) map.clone());
 	}
 
 	@Override

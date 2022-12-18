@@ -84,7 +84,7 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 
 	@Override
 	public BoolArrayTag clone() {
-		return new BoolArrayTag(data);
+		return new BoolArrayTag(data.clone());
 	}
 
 	@Override

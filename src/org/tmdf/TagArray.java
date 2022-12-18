@@ -54,7 +54,7 @@ public final class TagArray extends ArrayTag<Tag<?>[],Tag<?>> {
 
 	@Override
 	public TagArray clone() {
-		return new TagArray(value);
+		return new TagArray(value.clone()).setToShort(isShort());
 	}
 
 	@Override

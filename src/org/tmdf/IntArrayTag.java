@@ -49,7 +49,7 @@ public final class IntArrayTag extends NumArrayTag<int[],Integer> {
 
 	@Override
 	public IntArrayTag clone() {
-		return new IntArrayTag(value);
+		return new IntArrayTag(value.clone());
 	}
 
 	@Override

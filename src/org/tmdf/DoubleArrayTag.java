@@ -42,7 +42,7 @@ public final class DoubleArrayTag extends NumArrayTag<double[], Double> {
 
 	@Override
 	public DoubleArrayTag clone() {
-		return new DoubleArrayTag(value);
+		return new DoubleArrayTag(value.clone());
 	}
 
 	@Override

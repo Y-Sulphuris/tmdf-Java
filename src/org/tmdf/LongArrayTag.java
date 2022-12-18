@@ -45,7 +45,7 @@ public final class LongArrayTag extends NumArrayTag<long[],Long> {
 
 	@Override
 	public LongArrayTag clone() {
-		return new LongArrayTag(value);
+		return (LongArrayTag) new LongArrayTag(value.clone()).setSigned(isSigned());
 	}
 
 	@Override

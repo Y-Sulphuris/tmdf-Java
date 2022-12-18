@@ -26,7 +26,7 @@ public final class ByteArrayTag extends NumArrayTag<byte[],Byte> {
 
 	@Override
 	public ByteArrayTag clone() {
-		return new ByteArrayTag(value);
+		return new ByteArrayTag(value.clone());
 	}
 
 	@Override

@@ -33,8 +33,8 @@ public final class BoolTag extends Tag<Boolean>{
 	}
 
 	@Override
-	public Tag<Boolean> clone() {
-		return new BoolTag(getFlag());
+	public BoolTag clone() {
+		return this;
 	}
 
 	@Override

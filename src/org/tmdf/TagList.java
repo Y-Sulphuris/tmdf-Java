@@ -10,17 +10,18 @@ import java.util.stream.Stream;
  * Type: 9<br>
  * Payload: unordered array of tags without a name (name = ""). Always null-terminated (size not defined)
  */
-public final class TagList extends CollectionTag<List<Tag<?>>> {
-	private List<Tag<?>> list;
+public final class TagList extends CollectionTag<ArrayList<Tag<?>>> {
+	private ArrayList<Tag<?>> list;
 
-	public TagList(List<Tag<?>> list) {
+	public TagList(ArrayList<Tag<?>> list) {
 		this.list = list;
 	}
 	public TagList() {
 		this.list = new ArrayList<>();
 	}
 	public TagList(Tag<?>... tags) {
-		this.list = Arrays.asList(tags);
+		this.list = new ArrayList<>();
+		list.addAll(Arrays.asList(tags));
 	}
 	public TagList add(Tag<?> element) {
 		list.add(element);
@@ -46,18 +47,18 @@ public final class TagList extends CollectionTag<List<Tag<?>>> {
 	}
 
 	@Override
-	public List<Tag<?>> getValue() {
+	public ArrayList<Tag<?>> getValue() {
 		return list;
 	}
 
 	@Override
-	public void setValue(List<Tag<?>> value) {
+	public void setValue(ArrayList<Tag<?>> value) {
 		this.list = value;
 	}
 
 	@Override
-	public Tag<List<Tag<?>>> clone() {
-		return new TagList(list);
+	public Tag<ArrayList<Tag<?>>> clone() {
+		return new TagList((ArrayList<Tag<?>>) list.clone());
 	}
 
 

@@ -49,7 +49,7 @@ public final class CharArrayTag extends ArrayTag<char[],Character> {
 
 	@Override
 	public CharArrayTag clone() {
-		return new CharArrayTag(value);
+		return new CharArrayTag(value.clone());
 	}
 
 	@Override

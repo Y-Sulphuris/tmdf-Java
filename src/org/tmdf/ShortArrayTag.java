@@ -45,7 +45,7 @@ public final class ShortArrayTag extends NumArrayTag<short[], Short> {
 
 	@Override
 	public ShortArrayTag clone() {
-		return new ShortArrayTag(value);
+		return (ShortArrayTag) new ShortArrayTag(value.clone()).setSigned(isSigned());
 	}
 
 	@Override
