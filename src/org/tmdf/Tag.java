@@ -1,0 +1,255 @@
+package org.tmdf;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
+import static org.tmdf.TmdfUtils.*;
+
+public abstract class Tag<T> implements Cloneable{
+
+	private boolean flag = false;
+
+	protected Tag<T> setFlag(boolean flag) {
+		this.flag = flag;
+		return this;
+	}
+	protected boolean getFlag() {
+		return flag;
+	}
+
+	/**
+	 * Packs an object into a tag based on its type<br>
+	 * Collections and arrays are not supported
+	 */
+	public static Tag<?> wrap(Object x) {
+		if (x == null) return null;
+		if (x instanceof Byte) return new ByteTag((Byte) x);
+		if (x instanceof Short) return new ShortTag((Short) x);
+		if (x instanceof Integer) return new IntTag((Integer) x);
+		if (x instanceof Long) return new LongTag((Long) x);
+		if (x instanceof Float) return new FloatTag((Float) x);
+		if (x instanceof Double) return new DoubleTag((Double) x);
+		if (x instanceof Boolean) return BoolTag.of((Boolean) x);
+		//if (x instanceof List) return new TagList((List<Tag<?>>) x);
+		//if (x instanceof Map) return new TagMap((Map<String, Tag<?>>) x);
+		if (x instanceof String) {
+			String s = (String) x;
+			if (s.contains("\0")) {
+				return new CharArrayTag(s);
+			} else {
+				if (s.getBytes(StandardCharsets.UTF_8).length == s.length()) {
+					return new StringUTF8Tag(s);
+				} else return new StringUTF16Tag(s);
+			}
+		}
+		return new Tag<Void>() {
+			@Override
+			public Void getValue() {
+				throw new UnknownTagException("Tag<void>");
+			}
+
+			@Override
+			public void setValue(Void value) {
+				throw new UnknownTagException("Tag<void>");
+			}
+
+			@Override
+			public Tag<Void> clone() {
+				throw new UnknownTagException("Tag<void>");
+			}
+
+			@Override
+			protected byte[] getPayload() {
+				throw new UnknownTagException("Tag<void>");
+			}
+
+			@Override
+			public String toString() {
+				return "Tag<void>";
+			}
+
+			@Override
+			public int payloadSize() {
+				return 0;
+			}
+		};
+	}
+
+
+	//internal constructor
+	Tag() {}
+
+	/**
+	 * There are several types of tags:
+	 * <br> * All numbers are signed and use big endian *
+	 * <br> * Zero means the end of the collection or string if it is where the next tag ID is expected *
+	 *<br>
+	 * <br>	{@link ByteTag}: 1
+	 * <br>	Payload: single-byte integer value (1 byte)
+	 *<br>
+	 * <br>	{@link ShortTag}: 2
+	 * <br>	Payload: two-byte integer value (2 bytes)
+	 *<br>
+	 * <br>	{@link IntTag}: 3
+	 * <br>	Payload: four-byte integer value (4 bytes)
+	 *<br>
+	 * <br>	{@link LongTag}: 4
+	 * <br>	Payload: eight-byte integer value (8 bytes)
+	 *<br>
+	 * <br>	{@link FloatTag}: 5
+	 * <br>	Payload: four-byte fractional value (4 bytes) — IEEE 754-2008
+	 *<br>
+	 * <br>	{@link DoubleTag}: 6
+	 * <br>	Payload: eight-byte fractional value (8 bytes) — IEEE 754-2008
+	 *<br>
+	 * <br>	{@link BoolTag}: 7
+	 * <br>	Payload: true or false (1 byte)
+	 *<br>
+	 * <br>	{@link StringUTF8Tag}: 8
+	 * <br>	Payload: null-terminated array of single-byte characters in UTF-8 format. Always ends with '\0000' (size in bytes equals string length + 1)
+	 *<br>
+	 * <br>	{@link TagList}: 9
+	 * <br>	Payload: unordered array of tags without a name (name = ""). Always null-terminated (size not defined)
+	 *<br>
+	 * <br>	{@link TagMap}: 10
+	 * <br>	Payload: unordered array of named tags. Always null-terminated (size not defined)
+	 *<br>
+	 * <br>	{@link ByteArrayTag}: 11
+	 * <br>	Payload: an ordered array of one-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size + 4)
+	 *<br>
+	 * <br>	{@link ShortArrayTag}: 12
+	 * <br>	Payload: an ordered array of two-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size * 2 + 4)
+	 *<br>
+	 * <br>	{@link IntArrayTag}: 13
+	 * <br>	Payload: an ordered array of four-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size * 4 + 4)
+	 *<br>
+	 * <br>	{@link LongArrayTag}: 14
+	 * <br>	Payload: an ordered array of eight-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size * 8 + 4)
+	 *<br>
+	 * <br>	{@link FloatArrayTag}: 15
+	 * <br>	Payload: an ordered array of four-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes equals array size * 4 + 4)
+	 *<br>
+	 * <br>	{@link DoubleArrayTag}: 16
+	 * <br>	Payload: an ordered array of eight-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes equals array size * 8 + 4)
+	 *<br>
+	 * <br>	{@link BoolArrayTag}: 17
+	 * <br>	Payload: an ordered array of booleans. The first 4 bytes mean the length of the array (size in bytes equals array size + 4)
+	 *<br>
+	 * <br>	{@link TagArray}: 18
+	 * <br>	Payload: an ordered array of unnamed tags (name = ""). Tags are contained in the array as a whole (Not only payload). The first 4 bytes mean the length of the array (size not defined)
+	 *<br>
+	 * <br>	{@link StringUTF16Tag}: 19
+	 * <br>	Payload: null-terminated array of two-byte characters in UTF-16 format. Always ends with 2-bytes '\0000' (size in bytes equals string length * 2 + 2)
+	 *<br>
+	 * <br>	{@link CharArrayTag}: 20
+	 * <br>	Payload: an ordered array of two-byte characters in UTF-16 format. The first 4 bytes mean the length of the array (size in bytes equals array size * 2 + 4)
+	 * <br>	 * Use CharArrayTag if you need to put a null value there. In all other cases it is recommended to use strings (StringUTF8Tag or StringUTF16Tag) *
+	 */
+	private static final Class<?>[] types = {
+		null,
+		ByteTag.class,
+		ShortTag.class,
+		IntTag.class,
+		LongTag.class,
+		FloatTag.class,
+		DoubleTag.class,
+		BoolTag.class,
+		StringUTF8Tag.class,
+		TagList.class,
+		TagMap.class,
+		ByteArrayTag.class,
+		ShortArrayTag.class,
+		IntArrayTag.class,
+		LongArrayTag.class,
+		FloatArrayTag.class,
+		DoubleArrayTag.class,
+		BoolArrayTag.class,
+		TagArray.class,
+		StringUTF16Tag.class,
+		CharArrayTag.class
+	};
+
+	public abstract T getValue();
+	public abstract void setValue(T value);
+
+	@Override
+	public abstract Tag<T> clone();
+
+	/**
+	 * Integer type of tag
+	 * @see Tag#types
+	 */
+	public final byte getID() {
+
+		for (byte i = 0; i < types.length; i++) {
+			if (types[i] == this.getClass()) return i;
+		}
+		throw new RuntimeException(this.getClass().getCanonicalName());
+	}
+
+	/**
+	 * The tag consists of several components:<br>
+	 * ------------------------------------<br>
+	 *<br>
+	 * Special flag - [1 bit] (see {@link Tag#flag})<br>
+	 * TagType - [7 bit]<br>
+	 * TagNameLength - [1 byte] (unsigned one-byte integer value)<br>
+	 * TagName - [TagNameLength bytes] (UTF-8)<br>
+	 * PayLoad - (size depends on tag type) — {@link Tag#getPayload()}<br>
+	 *<br>
+	 * ------------------------------------<br>
+	 * @param name name of this tag
+	 * @return byteArray of this tag (convert to binary)
+	 */
+	public final byte[] toByteArray(String name) {
+		name = TmdfUtils.checkUTF8(name);
+
+		byte[] bytes = new byte[tagSize(name)];
+		bytes[0] = setTagFlag(getID(),getFlag());
+
+		int offset = 1;
+
+		//get name of tag
+		byte[] nameBytes = stringToTMDFNameByteArray(name);
+		System.arraycopy(nameBytes, 0, bytes, offset, nameBytes.length);
+
+		offset += nameBytes.length;
+
+		//get payload (implementation in tag)
+		byte[] payload = getPayload();
+		System.arraycopy(payload, 0, bytes, offset, payload.length);
+		return bytes;//sum(new byte[]{getID()},nameBytes,payload);
+	}
+
+	/**
+	 * Get only payload of this tag, without type and name data<br>
+	 * (for example: IntTag(4) -> [0,0,0,4])
+	 */
+	protected abstract byte[] getPayload();
+
+
+
+	@Override
+	public final boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		Tag<?> tag = (ByteTag) o;
+		return getValue() == tag.getValue();
+	}
+
+	@Override
+	public final int hashCode() {
+		return Objects.hash(super.hashCode(), getValue());
+	}
+
+	@Override
+	public String toString() {
+		return getValue().toString();
+	}
+
+	public final int tagSize(String name) {
+		return 1 + TmdfUtils.TMDFNameByteLength(name) + payloadSize();
+	}
+	public abstract int payloadSize();
+}

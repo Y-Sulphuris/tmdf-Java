@@ -2,6 +2,9 @@ package org.tmdf;
 
 import java.nio.ByteBuffer;
 
+/**
+ * to avoid creating too many ByteBuffer
+ */
 public final class ByteBuffersCache {
 	public static final ByteBuffer bb2 = ByteBuffer.allocate(2);
 	public static final ByteBuffer bb4 = ByteBuffer.allocate(4);
