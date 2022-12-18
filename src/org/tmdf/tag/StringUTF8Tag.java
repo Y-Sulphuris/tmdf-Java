@@ -20,7 +20,7 @@ public final class StringUTF8Tag extends StringTag {
 
 	@Override
 	protected byte[] getPayload() {
-		return TmdfUtils.sum((getValue() + '\0').getBytes(StandardCharsets.UTF_8));
+		return (getValue() + '\0').getBytes(StandardCharsets.UTF_8);
 	}
 
 	@Override

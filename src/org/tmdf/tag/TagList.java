@@ -58,25 +58,33 @@ public final class TagList extends CollectionTag<List<Tag<?>>> {
 		return new TagList(list);
 	}
 
+
+
+	/*
+			for (int i = 0; i < entryTag.length; i++) {
+				bytes[offset+i] = entryTag[i];
+			}
+	*/
 	@Override
 	protected byte[] getPayload() {
-		byte[] bytes = new byte[0];
+		byte[] bytes = new byte[payloadSize()]; //includes a zero at the end, so you do not need to add it separately
+		int offset = 0;
 		for (Tag<?> tag: list){
-			bytes = TmdfUtils.sum(bytes,tag.toByteArray(""));
+			byte[] current = tag.toByteArray("");
+			System.arraycopy(current, 0, bytes, offset, current.length);
+			offset += current.length;
 		}
-		bytes = TmdfUtils.sum(bytes,new byte[]{0});
-
+		//null-terminated
 		return bytes;
 	}
 
 	@Override
 	public int payloadSize() {
-		int size = 0;
+		int size = 1;//1 - zero at the end
+
 		for (Tag<?> tag: list){
 			size += tag.tagSize("");
 		}
-		size++;
-
 		return size;
 	}
 

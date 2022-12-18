@@ -21,12 +21,13 @@ public final class StringUTF16Tag extends StringTag {
 
 	@Override
 	protected byte[] getPayload() {
-		ByteBuffer bb = ByteBuffer.allocate(getValue().length()*2);
-		char[] chars = getValue().toCharArray();
+		ByteBuffer bb = ByteBuffer.allocate(payloadSize());
+		String value = getValue()+'\0';
+		char[] chars = value.toCharArray();
 		for (int i = 0; i < getValue().length(); i++) {
 			bb.putChar(i*2,chars[i]);
 		}
-		return TmdfUtils.sum(bb.array(),new byte[]{0,0});
+		return bb.array();
 	}
 
 	@Override

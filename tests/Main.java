@@ -16,7 +16,7 @@ public class Main {
 			.put("doubleDich",doubleTag));
 		byte[] bytes = map.toByteArray("map");
 
-		System.out.println(doubleTag);
+		System.out.println(map);
 		System.out.println(Arrays.toString(bytes));
 		System.out.println(new TagReader(bytes).nextUnnamedTag());
 		//

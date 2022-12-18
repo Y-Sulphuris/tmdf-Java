@@ -61,21 +61,24 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> {
 
 	@Override
 	protected byte[] getPayload() {
-		byte[] bytes = new byte[0];
+		//array is initialized:
+		byte[] bytes = new byte[payloadSize()];
+		int offset = 0;
 		for (Map.Entry<String, Tag<?>> entry: map.entrySet()){
-			bytes = TmdfUtils.sum(bytes,entry.getValue().toByteArray(entry.getKey()));
+			byte[] entryTag = entry.getValue().toByteArray(entry.getKey());
+			System.arraycopy(entryTag, 0, bytes, offset, entryTag.length);
+			offset += entryTag.length;
 		}
-		bytes = TmdfUtils.sum(bytes,new byte[]{0});
+		//zero at the end remains due to the presence of one empty cell after the array is initialized
 		return bytes;
 	}
 
 	@Override
 	public int payloadSize() {
-		int size = 0;
+		int size = 1;//null-terminated
 		for (Map.Entry<String, Tag<?>> entry: map.entrySet()){
 			size += entry.getValue().tagSize(entry.getKey());
 		}
-		size++;
 
 		return size;
 	}
