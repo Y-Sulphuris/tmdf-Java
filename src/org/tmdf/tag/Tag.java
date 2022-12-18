@@ -109,12 +109,22 @@ public abstract class Tag<T> implements Cloneable{
 	}
 	public final byte[] toByteArray(String name) {
 		name = TmdfUtils.checkUTF8(name);
+
+		byte[] bytes = new byte[tagSize(name)];
+		bytes[0] = getID();
+
+		int offset = 1;
+
 		//get name of tag
 		byte[] nameBytes = stringToTMDFNameByteArray(name);
+		System.arraycopy(nameBytes, 0, bytes, offset, nameBytes.length);
+
+		offset += nameBytes.length;
+
 		//get payload (implementation in tag)
 		byte[] payload = getPayload();
-
-		return sum(new byte[]{getID()},nameBytes,payload);
+		System.arraycopy(payload, 0, bytes, offset, payload.length);
+		return bytes;//sum(new byte[]{getID()},nameBytes,payload);
 	}
 	protected abstract byte[] getPayload();
 
