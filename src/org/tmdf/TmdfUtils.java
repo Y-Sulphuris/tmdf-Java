@@ -63,7 +63,7 @@ public final class TmdfUtils {
 
 
 	public static byte[] intToByteArray(int x) {
-		bb4.putInt(x);
+		bb4.putInt(0,x);
 		return new byte[]{bb4.get(0),bb4.get(1),bb4.get(2),bb4.get(3)};
 	}
 	public static int byteArrayToInt(byte[] bytes) {

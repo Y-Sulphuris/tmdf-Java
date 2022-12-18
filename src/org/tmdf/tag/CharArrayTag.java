@@ -52,7 +52,7 @@ public final class CharArrayTag extends ArrayTag<char[],Character> {
 
 	@Override
 	protected byte[] getPayload() {
-		byte[] bytes = new byte[value.length*2+4];
+		byte[] bytes = new byte[payloadSize()];
 		{
 			byte[] intArrayLength = TmdfUtils.intToByteArray(value.length);
 			System.arraycopy(intArrayLength, 0, bytes, 0, 4);
