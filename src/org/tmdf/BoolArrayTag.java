@@ -13,6 +13,19 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 		return (BoolArrayTag) setFlag(flag);
 	}
 
+	/**
+	 * Make bits from string
+	 * @param binary string of 1 and 0, spaces, underscores and dots can be used as delimiters for readability
+	 */
+	public static BoolArrayTag of(String binary) {
+		char[] chars = binary.replace("_","").replace(" ","").replace(" ","").toCharArray();
+		boolean[] booleans = new boolean[chars.length];
+		for (int i = 0; i < chars.length; i++) {
+			booleans[i] = Integer.parseInt(String.valueOf(chars[i])) != 0;
+		}
+		return of(booleans);
+	}
+
 	public static BoolArrayTag of(boolean... booleans) {
 		return new BoolArrayTag(booleans);
 	}
@@ -40,7 +53,7 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 
 	@Override
 	public Boolean get(int index) {
-		checkIndex(index, data.length*8);
+		checkIndex(index, data.length);
 		int posByte = Math.toIntExact(index / 8);
 		long posBit = index%8;
 		byte valByte = data[posByte];
@@ -50,11 +63,11 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 
 	@Override
 	public void set(int index, Boolean x) {
-		checkIndex(index, data.length*8);
+		checkIndex(index, data.length);
 		if (x) {
-			data[Math.toIntExact(index / 8)] |= 1 << (7-index%8);
+			data[Math.toIntExact(index / 8)] |= 1 << (7 - index % 8);
 		} else {
-			data[Math.toIntExact(index / 8)] &= ~(1 << (7-index%8));
+			data[Math.toIntExact(index / 8)] &= ~(1 << (7 - index % 8));
 		}
 	}
 
@@ -120,7 +133,9 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 		return str1.toString();
 	}
 	private static void checkIndex(long index, int length) {
+		length <<= 3; //length * 8
 		if (index>=length)
 			throw new ArrayIndexOutOfBoundsException(index + " >= " + length);
 	}
+
 }

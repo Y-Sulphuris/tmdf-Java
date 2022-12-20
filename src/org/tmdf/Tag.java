@@ -228,7 +228,6 @@ public abstract class Tag<T> implements Cloneable{
 	protected abstract byte[] getPayload();
 
 
-
 	@Override
 	public final boolean equals(Object o) {
 		if (this == o) return true;
@@ -248,6 +247,10 @@ public abstract class Tag<T> implements Cloneable{
 		return getValue().toString();
 	}
 
+	/**
+	 * get size in binary
+	 * @param name name of tag (null -> "")
+	 */
 	public final int tagSize(String name) {
 		return 1 + TmdfUtils.TMDFNameByteLength(name) + payloadSize();
 	}

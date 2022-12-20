@@ -187,13 +187,5 @@ public final class TagReader {
 	}
 
 
-	final static class NamedTag {
-		public String name;
 
-		public Tag<?> tag;
-		public NamedTag(String name, Tag<?> tag) {
-			this.name = name;
-			this.tag = tag;
-		}
-	}
 }

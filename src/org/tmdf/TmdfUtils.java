@@ -79,8 +79,7 @@ public final class TmdfUtils {
 
 
 	public static int TMDFNameByteLength(String name) {
-		name = checkUTF8(name);
-		return name.length()+1;
+		return checkUTF8(name).length()+1;
 	}
 
 	public static byte setTagFlag(byte x, boolean flag) {
