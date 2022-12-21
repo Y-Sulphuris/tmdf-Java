@@ -1,16 +1,19 @@
 package org.tmdf;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import static org.tmdf.TmdfUtils.*;
 
 public final class TagReader {
 	private int counter = 0;
-	private final ByteBuffer data;
+	private final ByteBuffer data_b;
 
-
-	public ByteBuffer data() {
-		return data;
+	public byte[] data() {
+		return data_b.array();
+	}
+	public ByteBuffer buffer() {
+		return data_b;
 	}
 
 	public int getAndAdd(final int count) {
@@ -18,9 +21,12 @@ public final class TagReader {
 		counter += count;
 		return oldValue;
 	}
+	public void resetCounter() {
+		counter = 0;
+	}
 
-	public TagReader(byte[] data) {
-		this.data = ByteBuffer.wrap(data);
+	public TagReader(final byte[] data) {
+		this.data_b = ByteBuffer.wrap(data);
 	}
 
 
@@ -68,18 +74,19 @@ public final class TagReader {
 				while (seeNextByte()!=0) {
 					data = TmdfUtils.sum(data,new byte[]{readByte()});
 				}
-				readByte();
+				counter++; //skip 0 at the end
 				char[] chars = new char[data.length];
 				for (int i = 0; i < data.length; i++) {
 					chars[i] = (char)data[i];
 				}
+
 				return new StringUTF8Tag(new String(chars));
 			case 9:
 				TagList list = new TagList();
 				while (seeNextByte() != 0) {
 					list.add(nextUnnamedTag());
 				}
-				readByte();
+				counter++;
 				return list;
 			case 10:
 				TagMap map = new TagMap();
@@ -159,33 +166,194 @@ public final class TagReader {
 
 
 	public byte seeNextByte() {
-		return data.get(counter);
+		return data_b.get(counter);
 	}
 	public short seeNextShort() {
-		return data.getShort(counter);
+		return data_b.getShort(counter);
 	}
 	public byte readByte() {
-		return data.get(counter++);
+		return data_b.get(counter++);
 	}
 	public short readShort() {
-		return data.getShort(getAndAdd(2));
+		return data_b.getShort(getAndAdd(2));
 	}
 	public char readChar() {
-		return data.getChar(getAndAdd(2));
+		return data_b.getChar(getAndAdd(2));
 	}
 	public int readInt() {
-		return data.getInt(getAndAdd(4));
+		return data_b.getInt(getAndAdd(4));
 	}
 	public float readFloat() {
-		return data.getFloat(getAndAdd(4));
+		return data_b.getFloat(getAndAdd(4));
 	}
 	public long readLong() {
-		return data.getLong(getAndAdd(8));
+		return data_b.getLong(getAndAdd(8));
 	}
 	public double readDouble() {
-		return data.getDouble(getAndAdd(8));
+		return data_b.getDouble(getAndAdd(8));
 	}
 
 
 
+	public int tagOffset(byte typeID, String name) {
+		int globalCounter = counter;
+		counter = 0;
+
+		String[] names = name.split("/");
+		byte[][] nameBytes = new byte[names.length][];
+		for (int i = 0; i < names.length; i++) {
+			nameBytes[i] = TmdfUtils.stringToTMDFNameByteArray(names[i]);
+		}
+
+
+		next:
+		for (int i = 0; i < names.length; i++) {
+			byte id = readByte();
+			boolean flag = TmdfUtils.getTagFlag(id); //save flag
+			id = TmdfUtils.setTagFlag(id,false); //and turn it off
+
+			Class<?> type = Tag.getType(id);
+			System.out.println(type.getName());
+
+			//read name
+			byte nameLength = readByte();
+			final byte[] thisName = new byte[nameLength];
+			for (int ii = 0; ii < nameLength; ii++) {
+				thisName[ii] = readByte();
+			}
+			//after reading name
+			if (Arrays.equals(thisName, nameBytes[i])) {
+				if (typeID == id && i == (names.length - 1) ) {
+					return retToGlobalCounter(globalCounter);
+				} else if (typeID == 10) {//это ещё один tagmap
+					continue next;
+				}
+			} else {
+				skipPayload(id,flag);
+				break next;
+			}
+		}
+
+
+
+		return retToGlobalCounter(globalCounter);
+	}
+	private int retToGlobalCounter(int globalCounter) {
+
+		//возвращает локальный счётчик (если сейчас активен)
+		//и присваивает счётчику снова глобальное значение
+		int result = this.counter;
+		this.counter = globalCounter;
+		return result;
+	}
+
+	//private static final TagMap map = new TagMap().put("A",new ByteTag(7)).put("B",new StringUTF8Tag("hello world"));
+
+	/**
+	 * <blockquote><pre>
+	 * TagMap("map") = {
+	 * 	ByteTag("A") = 7
+	 * 	StringUTF8Tag("B") = "hello world"
+	 * }</pre></blockquote>
+	 */
+	private static final byte[] testMap = {10, 3, 109, 97, 112, -127, 1, 65, 7, 8, 1, 66, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 0};
+	public static void main(String[] args) {
+		System.out.println(new TagReader(testMap).tagOffset((byte) 1,"A"));
+	}
+
+
+
+
+	//всё идиальна
+	private void skipTag() {
+		byte id = readByte();
+		boolean flag = TmdfUtils.getTagFlag(id); //save flag
+		id = TmdfUtils.setTagFlag(id,false); //and turn it off
+
+		byte nameLength = readByte();
+		for (int ii = 0; ii < nameLength; ii++) {
+			counter++;
+		}
+		skipPayload(id,flag);
+	}
+
+	//когда type и имя уже прочитано (имя не имеет значения)
+	private void skipPayload(byte type, boolean flag) {
+		switch (type) {
+			case 1://byte and boolean
+			case 7:
+				counter += 1;
+				return;
+			case 2://short
+				counter += 2;
+				return;
+			case 3://int and float
+			case 5:
+				counter += 4;
+				return;
+			case 4://long and double
+			case 6:
+				counter += 8;
+				return;
+			case 8:
+				while (seeNextByte()!=0) {
+					counter++;
+				}
+				counter++;
+				return;
+			case 9:
+			case 10:
+				while (seeNextByte() != 0) {
+					skipTag();
+				}
+				counter++;
+				return;
+			case 11: { //byte array
+				int length = readInt();
+				for (int i = 0; i < length; i++)
+					counter++;
+			}	return;
+			case 12://short array or char array
+			case 20: {
+				int length = readInt();
+				for (int i = 0; i < length; i++)
+					counter += 2;
+
+			}	return;
+			case 13://int array or float array
+			case 15: {
+				int length = readInt();
+				for (int i = 0; i < length; i++)
+					counter += 4;
+
+			}	return;
+			case 14: //long array or double array
+			case 16: {
+				int length = readInt();
+				for (int i = 0; i < length; i++)
+					counter += 8;
+
+			}	return;
+			case 17:
+				int lengthAsBytes = flag ? readShort() : readInt();
+				for (int i = 0; i < lengthAsBytes; i++) {
+					counter++;
+				}
+				return;
+			case 18:
+				int length = flag ? readShort() : readInt();
+				for (int i = 0; i <  length; i++) {
+					skipTag();
+				}
+				return;
+			case 19:
+				while (seeNextShort() != 0) {
+					counter += 2;
+				}
+				counter += 2;
+				return;
+			default:
+				throw new UnknownTagException(String.valueOf(type));
+		}
+	}
 }

@@ -180,11 +180,13 @@ public abstract class Tag<T> implements Cloneable{
 	 * @see Tag#types
 	 */
 	public final byte getID() {
-
 		for (byte i = 0; i < types.length; i++) {
 			if (types[i] == this.getClass()) return i;
 		}
 		throw new RuntimeException(this.getClass().getCanonicalName());
+	}
+	public static Class<?> getType(byte id) {
+		return types[id];
 	}
 
 	/**
