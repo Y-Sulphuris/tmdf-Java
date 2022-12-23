@@ -209,4 +209,10 @@ public abstract class StringTag extends Tag<String> implements CharSequence{
 	public IntStream codePoints() {
 		return value.codePoints();
 	}
+
+
+	@Override
+	public final String toString() {
+		return '"'+super.toString()+'"';
+	}
 }

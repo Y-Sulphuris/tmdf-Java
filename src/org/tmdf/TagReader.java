@@ -41,8 +41,8 @@ public final class TagReader {
 		boolean flag = getTagFlag(type);
 		type = setTagFlag(type,false);
 
-		byte namelength = readByte();
-		char[] chars = new char[(int)namelength];
+		int namelength = Byte.toUnsignedInt(readByte());
+		char[] chars = new char[namelength];
 		for (int i = 0; i < namelength; i++) {
 			chars[i] = (char) readByte();
 		}
@@ -133,13 +133,13 @@ public final class TagReader {
 				}
 				return darray;
 			case 17:
-				byte[] bodata = new byte[flag ? readShort() : readInt()];
+				byte[] bodata = new byte[flag ? Short.toUnsignedInt(readShort()) : readInt()];
 				for (int i = 0; i < bodata.length; i++) {
 					bodata[i] = readByte();
 				}
 				return new BoolArrayTag(bodata);
 			case 18:
-				TagArray tarray = new TagArray(flag ? readShort() : readInt());
+				TagArray tarray = new TagArray(flag ? Short.toUnsignedInt(readShort()) : readInt());
 				for (int i = 0; i <  tarray.length(); i++) {
 					tarray.set(i,nextUnnamedTag());
 				}
@@ -154,7 +154,7 @@ public final class TagReader {
 				return new StringUTF16Tag(new String(cdata));
 
 			case 20:
-				CharArrayTag carray = new CharArrayTag(readInt());
+				CharArrayTag carray = new CharArrayTag(flag ? Short.toUnsignedInt(readShort()) : readInt());
 				for (int i = 0; i < carray.length(); i++) {
 					carray.set(i,readChar());
 				}
@@ -195,18 +195,18 @@ public final class TagReader {
 
 
 
-	public int tagOffset(byte typeID, String name) {
+	//возвращает указатель на полезную нагрузку тега по имени
+	public int tagPayloadOffset(byte typeID, String name) {
 		int globalCounter = counter;
 		counter = 0;
 
 		String[] names = name.split("/");
-		byte[][] nameBytes = new byte[names.length][];
+		/*byte[][] nameBytes = new byte[names.length][];
 		for (int i = 0; i < names.length; i++) {
 			nameBytes[i] = TmdfUtils.stringToTMDFNameByteArray(names[i]);
-		}
+		}*/
 
 
-		next:
 		for (int i = 0; i < names.length; i++) {
 			byte id = readByte();
 			boolean flag = TmdfUtils.getTagFlag(id); //save flag
@@ -217,28 +217,32 @@ public final class TagReader {
 
 			//read name
 			byte nameLength = readByte();
-			final byte[] thisName = new byte[nameLength];
-			for (int ii = 0; ii < nameLength; ii++) {
+			final byte[] thisName = new byte[nameLength+1];
+
+			thisName[0] = nameLength;//полный массив имени включая длинну
+			for (int ii = 1; ii < nameLength+1; ii++) {
 				thisName[ii] = readByte();
 			}
+
 			//after reading name
-			if (Arrays.equals(thisName, nameBytes[i])) {
+			if (Arrays.equals(thisName, TmdfUtils.stringToTMDFNameByteArray(names[i]))) { //если имя совпадает с текущим выбраным фрагментом из полного пути
 				if (typeID == id && i == (names.length - 1) ) {
-					return retToGlobalCounter(globalCounter);
+					return goToGlobalAndReturnsLocal(globalCounter);
 				} else if (typeID == 10) {//это ещё один tagmap
-					continue next;
+					continue;
 				}
 			} else {
 				skipPayload(id,flag);
-				break next;
+				--i;
+				continue;
 			}
 		}
 
 
-
-		return retToGlobalCounter(globalCounter);
+		goToGlobalAndReturnsLocal(globalCounter);
+		return -1;
 	}
-	private int retToGlobalCounter(int globalCounter) {
+	private int goToGlobalAndReturnsLocal(int globalCounter) {
 
 		//возвращает локальный счётчик (если сейчас активен)
 		//и присваивает счётчику снова глобальное значение
@@ -258,7 +262,7 @@ public final class TagReader {
 	 */
 	private static final byte[] testMap = {10, 3, 109, 97, 112, -127, 1, 65, 7, 8, 1, 66, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 0};
 	public static void main(String[] args) {
-		System.out.println(new TagReader(testMap).tagOffset((byte) 1,"A"));
+		System.out.println(new TagReader(testMap).tagPayloadOffset((byte) 1,"map/A"));
 	}
 
 
@@ -302,7 +306,7 @@ public final class TagReader {
 				counter++;
 				return;
 			case 9:
-			case 10:
+			case 10: //tagmap
 				while (seeNextByte() != 0) {
 					skipTag();
 				}
@@ -313,8 +317,8 @@ public final class TagReader {
 				for (int i = 0; i < length; i++)
 					counter++;
 			}	return;
-			case 12://short array or char array
-			case 20: {
+			case 12://char array (no char array)
+			{
 				int length = readInt();
 				for (int i = 0; i < length; i++)
 					counter += 2;
@@ -335,23 +339,30 @@ public final class TagReader {
 
 			}	return;
 			case 17:
-				int lengthAsBytes = flag ? readShort() : readInt();
+				int lengthAsBytes = flag ? Short.toUnsignedInt(readShort()) : readInt();
 				for (int i = 0; i < lengthAsBytes; i++) {
 					counter++;
 				}
 				return;
-			case 18:
-				int length = flag ? readShort() : readInt();
+			case 18:{
+				int length = flag ? Short.toUnsignedInt(readShort()) : readInt();
 				for (int i = 0; i <  length; i++) {
 					skipTag();
 				}
-				return;
+			}	return;
+
 			case 19:
 				while (seeNextShort() != 0) {
 					counter += 2;
 				}
 				counter += 2;
 				return;
+			case 20: {
+				int length = flag ? Short.toUnsignedInt(readShort()) : readInt();
+				for (int i = 0; i < length; i++)
+					counter += 2;
+
+			}	return;
 			default:
 				throw new UnknownTagException(String.valueOf(type));
 		}

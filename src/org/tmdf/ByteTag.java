@@ -10,7 +10,7 @@ public final class ByteTag extends NumTag<Integer> {
 		this.value = value;
 	}
 	public ByteTag(int value) {
-		this(value,value < 0);
+		this(value,value < 0); //if value is positive, set tag to unsigned as default (flag: 1)
 	}
 	public ByteTag(int value, boolean signed) {
 		setSigned(signed);

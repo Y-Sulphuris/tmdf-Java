@@ -1,10 +1,32 @@
 import org.tmdf.*;
-import org.tmdf.debug.Debugger;
 
 import java.util.Arrays;
 
 public class Main {
+
 	public static void main(String[] args) {
+		TagMap map = new TagMap();
+		map.put("the_one",new IntTag(5).setSigned(false));
+		map.put("paper", new TagList()
+			.add(ByteArrayTag.of(4,3,6))
+			.add(ByteArrayTag.of(9,9,2))
+			.add(TagArray.of(
+				new DoubleTag(7.4),//[0]
+				BoolTag.FALSE)//[1]
+			)
+		);
+		map.put("name_of_paper",new StringUTF16Tag("declaration of Independence"));
+		NamedTag nmap = map.name("Source tag");
+		System.out.println(nmap.toGenericString());
+		byte[] data = nmap.toByteArray();
+		System.out.println(Arrays.toString(data));
+		TagReader parser = new TagReader(data);
+		System.out.println(parser.nextTag().toGenericString());
+		System.out.println(parser.getAndAdd(0) + (parser.getAndAdd(0) == data.length ?" =" : " != ") + data.length);
+
+	}
+
+	/*public static void main(String[] args) {
 		DoubleTag doubleTag = new DoubleTag(Double.POSITIVE_INFINITY);
 
 		TagMap map = new TagMap();
@@ -14,9 +36,9 @@ public class Main {
 		map.put("str2",new StringUTF16Tag("(◠‿◕)"));
 		map.put("off",new TagMap()
 			.put("one",new DoubleTag(1))
-			.put("double_00",doubleTag));
+			.put("doubleDich",doubleTag));
 		map.put("charArray",new CharArrayTag("abc\0\0\1"));
-		map.put("array_of_bits", BoolArrayTag.of("0101_1000 ").setToShort(true));
+		map.put("array of bits", new BoolArrayTag(4).setToShort(true));
 		map.put("x",new TagArray(new IntTag(3),new ByteTag(8)).setToShort(true));
 
 
@@ -32,7 +54,7 @@ public class Main {
 
 		System.out.println(Debugger.heapSizeOf(map,"map") +" -> "+ map.tagSize("map"));
 
-	}
+	}*/
 
 
 
@@ -40,7 +62,7 @@ public class Main {
 		BoolArrayTag bits = BoolArrayTag.of(bytes);
 		for (int i = 0; i < bits.length(); i++) {
 			if (i % 8 == 0 && i != 0) System.out.print('_');
-			if (i % 64 == 0 && i != 0) System.out.print('_');
+			if (i % 64 == 0 && i != 0) System.out.print("__");
 			System.out.print(bits.get(i)?1:0);
 		}
 		System.out.println();

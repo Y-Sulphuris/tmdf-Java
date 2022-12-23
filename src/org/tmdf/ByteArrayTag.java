@@ -7,6 +7,17 @@ import java.util.Arrays;
  * Payload: an ordered array of one-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size + 4)
  */
 public final class ByteArrayTag extends NumArrayTag<byte[],Byte> {
+	public static ByteArrayTag of(byte... bytes) {
+		return new ByteArrayTag(bytes);
+	}
+	public static ByteArrayTag of(int... numbers) {
+		byte[] bytes = new byte[numbers.length];
+		for (int i = 0; i < numbers.length; i++) {
+			bytes[i] = (byte) numbers[i];
+		}
+		return new ByteArrayTag(bytes);
+	}
+
 	private byte[] value;
 	public ByteArrayTag(byte[] value) {
 		this.value = value;
@@ -58,7 +69,7 @@ public final class ByteArrayTag extends NumArrayTag<byte[],Byte> {
 
 	@Override
 	public int payloadSize() {
-		return 4*length();
+		return 4+length();
 	}
 
 	private String toUnsignedString() {

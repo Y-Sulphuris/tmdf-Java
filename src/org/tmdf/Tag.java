@@ -257,4 +257,13 @@ public abstract class Tag<T> implements Cloneable{
 		return 1 + TmdfUtils.TMDFNameByteLength(name) + payloadSize();
 	}
 	public abstract int payloadSize();
+
+	public String toGenericString(String name) {
+		return getClass().getSimpleName() + "(\"" + name + "\")" + (getFlag()?'*':"") + " = " + this;
+	}
+
+
+	public final NamedTag name(String name) {
+		return new NamedTag(name,this);
+	}
 }

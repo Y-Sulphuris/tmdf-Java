@@ -7,6 +7,6 @@ public abstract class CollectionTag<T> extends Tag<T>{
 
 	@Override
 	protected boolean getFlag() {
-		return false;
+		return false;//flag is unused
 	}
 }

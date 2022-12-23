@@ -9,7 +9,9 @@ import static org.tmdf.ByteBuffersCache.bb2;
  * Payload: an ordered array of two-byte characters in UTF-16 format. The first 4 bytes mean the length of the array (size in bytes equals array size * 2 + 4)
  */
 public final class CharArrayTag extends ArrayTag<char[],Character> {
-
+	public boolean isShort() {
+		return getFlag();
+	}
 	private char[] value;
 
 	public CharArrayTag(char... value) {
@@ -57,12 +59,16 @@ public final class CharArrayTag extends ArrayTag<char[],Character> {
 		byte[] bytes = new byte[payloadSize()];
 		{
 			byte[] intArrayLength = TmdfUtils.intToByteArray(value.length);
-			System.arraycopy(intArrayLength, 0, bytes, 0, 4);
+			if (isShort()) {
+				intArrayLength = new byte[]{bytes[2],bytes[3]};
+			}
+			System.arraycopy(intArrayLength, 0, bytes, 0, intArrayLength.length);
 		}
 		for (int i = 0; i < value.length; i++) {
 			bb2.putChar(0,value[i]);
-			bytes[4+i*2] = bb2.get(0);
-			bytes[4+i*2+1] = bb2.get(1);
+			int offset = (isShort() ? 2 : 4) + i * 2;
+			bytes[offset] = bb2.get(0);
+			bytes[offset + 1] = bb2.get(1);
 		}
 		return bytes;
 	}
@@ -75,6 +81,6 @@ public final class CharArrayTag extends ArrayTag<char[],Character> {
 
 	@Override
 	public int payloadSize() {
-		return 4+length()*2;
+		return (isShort() ? 2 : 4) + length()*2;
 	}
 }

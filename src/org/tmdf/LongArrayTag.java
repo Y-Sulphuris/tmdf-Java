@@ -72,7 +72,7 @@ public final class LongArrayTag extends NumArrayTag<long[],Long> {
 
 	@Override
 	public int payloadSize() {
-		return 4*length()*8;
+		return 4+length()*8;
 	}
 
 	private String toUnsignedString() {

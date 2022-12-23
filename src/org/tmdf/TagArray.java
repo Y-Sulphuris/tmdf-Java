@@ -7,6 +7,9 @@ import java.util.Arrays;
  * Payload: an ordered array of unnamed tags (name = ""). Tags are contained in the array as a whole (Not only payload). The first 4 bytes mean the length of the array (size not defined)
  */
 public final class TagArray extends ArrayTag<Tag<?>[],Tag<?>> {
+	public static TagArray of(Tag<?>... tags) {
+		return new TagArray(tags);
+	}
 
 	public boolean isShort() {
 		return getFlag();
@@ -16,7 +19,7 @@ public final class TagArray extends ArrayTag<Tag<?>[],Tag<?>> {
 	}
 	private Tag<?>[] value;
 
-	public TagArray(Tag<?>... value) {
+	public TagArray(Tag<?>[] value) {
 		if (value.length<Short.MAX_VALUE) setToShort(true);
 		else setToShort(false);
 		this.value = value;

@@ -69,7 +69,7 @@ public final class DoubleArrayTag extends NumArrayTag<double[], Double> {
 
 	@Override
 	public int payloadSize() {
-		return 4*length()*8;
+		return 4+length()*8;
 	}
 
 }

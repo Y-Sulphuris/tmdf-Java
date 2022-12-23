@@ -1,9 +1,6 @@
 package org.tmdf;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -22,6 +19,10 @@ public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
 		this.map = new HashMap<>();
 	}
 
+
+	public TagMap add(NamedTag namedTag) {
+		return put(namedTag.name,namedTag.tag);
+	}
 	public TagMap put(String name, Tag<?> tag) {
 		if (name == null) return this;
 		map.put(name,tag);
@@ -164,5 +165,26 @@ public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
 
 
 
+	@Override
+	public String toGenericString(String name) {
+		return getClass().getSimpleName() + "(\"" + name + "\")" + (getFlag()?'*':"") + " = " + generic();
+	}
 
+	private String generic() {
+		Iterator<Map.Entry<String,Tag<?>>> i = entrySet().iterator();
+		if (! i.hasNext())
+			return "{}";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append('{').append('\n');
+		while (true) {
+			Map.Entry<String,Tag<?>> e = i.next();
+			String key = e.getKey();
+			Tag<?> value = e.getValue();
+			sb.append(value.toGenericString(key));
+			if (! i.hasNext())
+				return sb.append('\n').append('}').toString();
+			sb.append('\n');
+		}
+	}
 }
