@@ -202,6 +202,7 @@ public final class TagReader {
 
 
 	//возвращает указатель на полезную нагрузку тега по имени
+	@Deprecated
 	public int tagPayloadOffset(int typeID, String name) {
 		int globalCounter = counter;
 		counter = 0;
@@ -249,12 +250,14 @@ public final class TagReader {
 		goToGlobalAndReturnsLocal(globalCounter);
 		return -1;
 	}
+	@Deprecated
 	public Tag<?> getTag(int typeID, String name) {
 		NamedTag namedTag = getNamedTag(typeID, name);
 		if (namedTag == null)
 			return null;
 		return namedTag.getTag();
 	}
+	@Deprecated
 	public NamedTag getNamedTag(int typeID, String name) {
 		int globalCounter = counter;
 		counter = 0;
