@@ -3,8 +3,9 @@ package org.tmdf;
 import java.nio.ByteBuffer;
 
 /**
- * Type: 19<br>
- * Payload: null-terminated array of two-byte characters in UTF-16 format. Always ends with 2-bytes '\0000' (size in bytes equals string length * 2 + 2)
+ * 	StringUTF16Tag: 19<br>
+ * 	Payload: null-terminated array of two-byte characters in UTF-16 format. Always ends with 2-bytes '\0000' (size in bytes equals string length * 2 + 2)<br>
+ * 	Flag: none
  */
 public final class StringUTF16Tag extends StringTag {
 	{

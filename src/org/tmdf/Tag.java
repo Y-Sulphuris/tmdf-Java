@@ -1,6 +1,8 @@
 package org.tmdf;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import static org.tmdf.TmdfUtils.*;
@@ -19,7 +21,7 @@ public abstract class Tag<T> implements Cloneable{
 
 	/**
 	 * Packs an object into a tag based on its type<br>
-	 * Collections and arrays are not supported
+	 * Collections are not supported
 	 */
 	public static Tag<?> wrap(Object x) {
 		if (x == null) return null;
@@ -30,8 +32,17 @@ public abstract class Tag<T> implements Cloneable{
 		if (x instanceof Float) return new FloatTag((Float) x);
 		if (x instanceof Double) return new DoubleTag((Double) x);
 		if (x instanceof Boolean) return BoolTag.of((Boolean) x);
-		//if (x instanceof List) return new TagList((List<Tag<?>>) x);
-		//if (x instanceof Map) return new TagMap((Map<String, Tag<?>>) x);
+		//if (x instanceof ArrayList) return new TagList((ArrayList<Tag<?>>) x);
+		//if (x instanceof HashMap) return new TagMap((HashMap<String, Tag<?>>) x);
+		if (x instanceof byte[]) return new ByteArrayTag((byte[]) x);
+		if (x instanceof short[]) return new ShortArrayTag((short[]) x);
+		if (x instanceof int[]) return new IntArrayTag((int[]) x);
+		if (x instanceof long[]) return new LongArrayTag((long[]) x);
+		if (x instanceof float[]) return new FloatArrayTag((float[]) x);
+		if (x instanceof double[]) return new DoubleArrayTag((double[]) x);
+		if (x instanceof boolean[]) return new BoolArrayTag((boolean[]) x);
+		if (x instanceof char[]) return new CharArrayTag((char[]) x);
+		if (x instanceof Tag<?>[]) return new TagArray((Tag<?>[]) x);
 		if (x instanceof String) {
 			String s = (String) x;
 			if (s.contains("\0")) {
@@ -81,69 +92,95 @@ public abstract class Tag<T> implements Cloneable{
 
 	/**
 	 * There are several types of tags:
-	 * <br> * All numbers are signed and use big endian *
-	 * <br> * Zero means the end of the collection or string if it is where the next tag ID is expected *
-	 *<br>
-	 * <br>	{@link ByteTag}: 1
-	 * <br>	Payload: single-byte integer value (1 byte)
-	 *<br>
-	 * <br>	{@link ShortTag}: 2
-	 * <br>	Payload: two-byte integer value (2 bytes)
-	 *<br>
-	 * <br>	{@link IntTag}: 3
-	 * <br>	Payload: four-byte integer value (4 bytes)
-	 *<br>
-	 * <br>	{@link LongTag}: 4
-	 * <br>	Payload: eight-byte integer value (8 bytes)
-	 *<br>
-	 * <br>	{@link FloatTag}: 5
-	 * <br>	Payload: four-byte fractional value (4 bytes) — IEEE 754-2008
-	 *<br>
-	 * <br>	{@link DoubleTag}: 6
-	 * <br>	Payload: eight-byte fractional value (8 bytes) — IEEE 754-2008
-	 *<br>
-	 * <br>	{@link BoolTag}: 7
-	 * <br>	Payload: true or false (1 byte)
-	 *<br>
-	 * <br>	{@link StringUTF8Tag}: 8
-	 * <br>	Payload: null-terminated array of single-byte characters in UTF-8 format. Always ends with '\0000' (size in bytes equals string length + 1)
-	 *<br>
-	 * <br>	{@link TagList}: 9
-	 * <br>	Payload: unordered array of tags without a name (name = ""). Always null-terminated (size not defined)
-	 *<br>
-	 * <br>	{@link TagMap}: 10
-	 * <br>	Payload: unordered array of named tags. Always null-terminated (size not defined)
-	 *<br>
-	 * <br>	{@link ByteArrayTag}: 11
-	 * <br>	Payload: an ordered array of one-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size + 4)
-	 *<br>
-	 * <br>	{@link ShortArrayTag}: 12
-	 * <br>	Payload: an ordered array of two-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size * 2 + 4)
-	 *<br>
-	 * <br>	{@link IntArrayTag}: 13
-	 * <br>	Payload: an ordered array of four-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size * 4 + 4)
-	 *<br>
-	 * <br>	{@link LongArrayTag}: 14
-	 * <br>	Payload: an ordered array of eight-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size * 8 + 4)
-	 *<br>
-	 * <br>	{@link FloatArrayTag}: 15
-	 * <br>	Payload: an ordered array of four-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes equals array size * 4 + 4)
-	 *<br>
-	 * <br>	{@link DoubleArrayTag}: 16
-	 * <br>	Payload: an ordered array of eight-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes equals array size * 8 + 4)
-	 *<br>
-	 * <br>	{@link BoolArrayTag}: 17
-	 * <br>	Payload: an ordered array of booleans. The first 4 bytes mean the length of the array (size in bytes equals array size + 4)
-	 *<br>
-	 * <br>	{@link TagArray}: 18
-	 * <br>	Payload: an ordered array of unnamed tags (name = ""). Tags are contained in the array as a whole (Not only payload). The first 4 bytes mean the length of the array (size not defined)
-	 *<br>
-	 * <br>	{@link StringUTF16Tag}: 19
-	 * <br>	Payload: null-terminated array of two-byte characters in UTF-16 format. Always ends with 2-bytes '\0000' (size in bytes equals string length * 2 + 2)
-	 *<br>
-	 * <br>	{@link CharArrayTag}: 20
-	 * <br>	Payload: an ordered array of two-byte characters in UTF-16 format. The first 4 bytes mean the length of the array (size in bytes equals array size * 2 + 4)
-	 * <br>	 * Use CharArrayTag if you need to put a null value there. In all other cases it is recommended to use strings (StringUTF8Tag or StringUTF16Tag) *
+	 <br>* All numbers use big endian *
+	 <br>* If Flag is marked as none, it is always 0 *
+	 <br>* Zero means the end of the collection or string if it is where the next tag ID is expected *
+<br>
+	 <br>ByteTag: 1
+	 <br>Payload: single-byte integer value (1 byte)
+	 <br>Flag: true if unsigned, false if not
+<br>
+	 <br>ShortTag: 2
+	 <br>Payload: two-byte integer value (2 bytes)
+	 <br>Flag: true if unsigned, false if not
+<br>
+	 <br>IntTag: 3
+	 <br>Payload: four-byte integer value (4 bytes)
+	 <br>Flag: true if unsigned, false if not
+<br>
+	 <br>LongTag: 4
+	 <br>Payload: eight-byte integer value (8 bytes)
+	 <br>Flag: true if unsigned, false if not
+<br>
+	 <br>FloatTag: 5
+	 <br>Payload: four-byte fractional value (4 bytes) - IEEE 754-2008
+	 <br>Flag: none
+<br>
+	 <br>DoubleTag: 6
+	 <br>Payload: eight-byte fractional value (8 bytes) - IEEE 754-2008
+	 <br>Flag: none
+<br>
+	 <br>BoolTag: 7
+	 <br>Payload: none
+	 <br>Flag: boolean value of tag (1 if true, 0 if false)
+<br>
+	 <br>StringUTF8Tag: 8
+	 <br>Payload: null-terminated array of single-byte characters in UTF-8 format. Always ends with '\00' (size in bytes equals string length + 1)
+	 <br>Flag: none
+<br>
+	 <br>TagList: 9
+	 <br>Payload: unordered array of tags without a name (name = ""). Always null-terminated (size not defined)
+	 <br>Flag: none
+<br>
+	 <br>TagMap: 10
+	 <br>Payload: unordered array of named tags. Always null-terminated (size not defined)
+	 <br>Flag: none
+<br>
+	 <br>ByteArrayTag: 11
+	 <br>Payload: an ordered array of one-byte integers. The first 4 bytes mean the length of the array (size in bytes = array size + 4)
+	 <br>Flag: If true, all values are unsigned, else all values are signed
+<br>
+	 <br>ShortArrayTag: 12
+	 <br>Payload: an ordered array of two-byte integers. The first 4 bytes mean the length of the array (size in bytes = array size * 2 + 4)
+	 <br>Flag: If true, all values are unsigned, else all values are signed
+<br>
+	 <br>IntArrayTag: 13
+	 <br>Payload: an ordered array of four-byte integers. The first 4 bytes mean the length of the array (size in bytes = array size * 4 + 4)
+	 <br>Flag: If true, all values are unsigned, else all values are signed
+<br>
+	 <br>LongArrayTag: 14
+	 <br>Payload: an ordered array of eight-byte integers. The first 4 bytes mean the length of the array (size in bytes = array size * 8 + 4)
+	 <br>Flag: If true, all values are unsigned, else all values are signed
+<br>
+	 <br>FloatArrayTag: 15
+	 <br>Payload: an ordered array of four-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes = array size * 4 + 4)
+	 <br>Flag: none
+<br>
+	 <br>DoubleArrayTag: 16
+	 <br>Payload: an ordered array of eight-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes = array size * 8 + 4)
+	 <br>Flag: none
+<br>
+	 <br>BoolArrayTag: 17
+	 <br>Payload: an ordered array of booleans (boolean is 1 bit). The first 4 bytes mean the 1/8 of length of the array (size in bytes = array size/8 + (4 or 2))
+	 <br>The size of the array in bits is always a multiple of 8. If it is not, zero bits are added until the size is a multiple of 8
+	 <br>Flag: If true, the size of the array is 2 bytes (no more than 65535*8). Else 4 bytes (does not exceed 2147483647*8)
+<br>
+	 <br>TagArray: 18
+	 <br>Payload: an ordered array of unnamed tags (name = ""). Tags are contained in the array as a whole (Not only payload). The first 4 bytes mean the length of the array (size not defined)
+	 <br>Flag: If true, the size of the array is 2 bytes (no more than 65535). Else 4 bytes (does not exceed 2147483647)
+<br>
+	 <br>StringUTF16Tag: 19
+	 <br>Payload: null-terminated array of two-byte characters in UTF-16 format. Always ends with 2-bytes '\0000' (size in bytes equals string length * 2 + 2)
+	 <br>Flag: none
+<br>
+	 <br>CharArrayTag: 20
+	 <br>Payload: an ordered array of two-byte characters in UTF-16 format. The first 4 bytes mean the length of the array (size in bytes equals array size * 2 + 4)
+	 <br>Flag: If true, the size of the array is 2 bytes (no more than 65535). Else 4 bytes (does not exceed 2147483647)
+	 <br>* Use CharArrayTag if you need to put a null value there. In all other cases it is recommended to use strings (StringUTF8Tag or StringUTF16Tag) *
+<br>
+<br>
+	 <br>It is recommended to use TagMap as the root of the hierarchy in the file, but this requirement is not mandatory: any tag can be located at the root
+
 	 */
 	private static final Class<?>[] types = {
 		null,

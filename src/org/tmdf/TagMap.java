@@ -6,8 +6,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Type: 10<br>
- * Payload: unordered array of named tags. Always null-terminated (size not defined)
+ * 	TagMap: 10<br>
+ * 	Payload: unordered array of named tags. Always null-terminated (size not defined)<br>
+ * 	Flag: none
  */
 public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
 	private HashMap<String,Tag<?>> map;

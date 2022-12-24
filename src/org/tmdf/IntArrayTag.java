@@ -5,8 +5,9 @@ import java.util.Arrays;
 import static org.tmdf.ByteBuffersCache.bb4;
 
 /**
- * Type: 13
- * Payload: an ordered array of four-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size * 4 + 4)
+ * 	IntArrayTag: 13<br>
+ * 	Payload: an ordered array of four-byte integers. The first 4 bytes mean the length of the array (size in bytes = array size * 4 + 4)<br>
+ * 	Flag: If true, all values are unsigned, else all values are signed
  */
 public final class IntArrayTag extends NumArrayTag<int[],Integer> {
 	private int[] value;

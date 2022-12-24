@@ -5,8 +5,9 @@ import java.util.Arrays;
 import static org.tmdf.ByteBuffersCache.bb2;
 
 /**
- * Type: 12<br>
- * Payload: an ordered array of two-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size * 2 + 4)
+ * 	ShortArrayTag: 12<br>
+ * 	Payload: an ordered array of two-byte integers. The first 4 bytes mean the length of the array (size in bytes = array size * 2 + 4)<br>
+ * 	Flag: If true, all values are unsigned, else all values are signed
  */
 public final class ShortArrayTag extends NumArrayTag<short[], Short> {
 	private short[] value;

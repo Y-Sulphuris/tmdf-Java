@@ -3,8 +3,9 @@ package org.tmdf;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Type: 8<br>
- * Payload: null-terminated array of single-byte characters in UTF-8 format. Always ends with '\0000' (size in bytes equals string length + 1)
+ * 	StringUTF8Tag: 8<br>
+ * 	Payload: null-terminated array of single-byte characters in UTF-8 format. Always ends with '\00' (size in bytes equals string length + 1)<br>
+ * 	Flag: none
  */
 public final class StringUTF8Tag extends StringTag {
 	{

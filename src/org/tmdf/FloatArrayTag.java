@@ -5,14 +5,18 @@ import java.util.Arrays;
 import static org.tmdf.ByteBuffersCache.bb4;
 
 /**
- * Type: 15<br>
- * Payload: an ordered array of four-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes equals array size * 4 + 4)
+ * 	FloatArrayTag: 15<br>
+ * 	Payload: an ordered array of four-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes = array size * 4 + 4)<br>
+ * 	Flag: none
  */
 public final class FloatArrayTag extends ArrayTag<float[],Float> {
+	public static FloatArrayTag of(float... values) {
+		return new FloatArrayTag(values);
+	}
 
 	private float[] value;
 
-	public FloatArrayTag(float... value) {
+	public FloatArrayTag(float[] value) {
 		this.value = value;
 	}
 	public FloatArrayTag(int length) {

@@ -5,8 +5,9 @@ import java.util.Arrays;
 import static org.tmdf.ByteBuffersCache.bb8;
 
 /**
- * Type: 16<br>
- * Payload: an ordered array of eight-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes equals array size * 8 + 4)
+ * 	DoubleArrayTag: 16<br>
+ * 	Payload: an ordered array of eight-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes = array size * 8 + 4)<br>
+ * 	Flag: none
  */
 public final class DoubleArrayTag extends NumArrayTag<double[], Double> {
 	private double[] value;

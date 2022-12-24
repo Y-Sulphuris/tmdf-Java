@@ -22,7 +22,12 @@ public class Main {
 		System.out.println(Arrays.toString(data));
 		TagReader parser = new TagReader(data);
 		System.out.println(parser.nextTag().toGenericString());
-		System.out.println(parser.getAndAdd(0) + (parser.getAndAdd(0) == data.length ?" =" : " != ") + data.length);
+		System.out.println(parser.counter() + (parser.counter() == data.length ?" =" : " != ") + data.length);
+
+
+		System.out.println(new StringUTF16Tag("aaa").name("abc").toGenericString());
+		System.out.println(parser.tagPayloadOffset(19,"Source tag/name_of_paper"));
+		System.out.println(parser.getNamedTag(9,"Source tag/paper").toGenericString());
 
 	}
 

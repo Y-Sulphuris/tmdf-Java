@@ -1,8 +1,9 @@
 package org.tmdf;
 
 /**
- * Type: 1<br>
- * Payload: single-byte integer value (1 byte)
+ * 	ByteTag: 1<br>
+ * 	Payload: single-byte integer value (1 byte)<br>
+ * 	Flag: true if unsigned, false if not
  */
 public final class ByteTag extends NumTag<Integer> {
 	private byte value = 0;

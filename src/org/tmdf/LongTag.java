@@ -3,8 +3,9 @@ package org.tmdf;
 import static org.tmdf.ByteBuffersCache.bb8;
 
 /**
- * Type: 4<br>
- * Payload: eight-byte integer value (8 bytes)
+ * 	LongTag: 4<br>
+ * 	Payload: eight-byte integer value (8 bytes)<br>
+ * 	Flag: true if unsigned, false if not
  */
 public final class LongTag extends NumTag<Long> {
 	private long value = 0;

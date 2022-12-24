@@ -3,8 +3,9 @@ package org.tmdf;
 import static org.tmdf.ByteBuffersCache.bb4;
 
 /**
- * Type: 5<br>
- * Payload: four-byte fractional value (4 bytes) — IEEE 754-2008
+ * 	FloatTag: 5<br>
+ * 	Payload: four-byte fractional value (4 bytes) - IEEE 754-2008<br>
+ * 	Flag: none
  */
 public final class FloatTag extends NumTag<Float> {
 	private float value = 0.0f;

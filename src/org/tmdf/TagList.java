@@ -7,8 +7,9 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 /**
- * Type: 9<br>
- * Payload: unordered array of tags without a name (name = ""). Always null-terminated (size not defined)
+ * 	TagList: 9<br>
+ * 	Payload: unordered array of tags without a name (name = ""). Always null-terminated (size not defined)<br>
+ * 	Flag: none
  */
 public final class TagList extends CollectionTag<ArrayList<Tag<?>>> {
 	private ArrayList<Tag<?>> list;

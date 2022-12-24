@@ -5,16 +5,23 @@ import java.util.Arrays;
 import static org.tmdf.ByteBuffersCache.bb2;
 
 /**
- * CharArrayTag: 20<br>
- * Payload: an ordered array of two-byte characters in UTF-16 format. The first 4 bytes mean the length of the array (size in bytes equals array size * 2 + 4)
+ * 	CharArrayTag: 20<p>
+ * 	Payload: an ordered array of two-byte characters in UTF-16 format. The first 4 bytes mean the length of the array (size in bytes equals array size * 2 + 4)<br>
+ * 	Flag: If true, the size of the array is 2 bytes (no more than 65535). Else 4 bytes (does not exceed 2147483647)<br>
+ * 	 * Use CharArrayTag if you need to put a null value there. In all other cases it is recommended to use strings (StringUTF8Tag or StringUTF16Tag) *
  */
 public final class CharArrayTag extends ArrayTag<char[],Character> {
+
+	public static CharArrayTag of(char... values) {
+		return new CharArrayTag(values);
+	}
+
 	public boolean isShort() {
 		return getFlag();
 	}
 	private char[] value;
 
-	public CharArrayTag(char... value) {
+	public CharArrayTag(char[] value) {
 		this.value = value;
 	}
 	public CharArrayTag(int index) {
@@ -46,6 +53,8 @@ public final class CharArrayTag extends ArrayTag<char[],Character> {
 
 	@Override
 	public void setValue(char[] value) {
+		if (isShort() && value.length > Short.MAX_VALUE*2-1)
+			throw new IndexOutOfBoundsException("array overflow");
 		this.value = value;
 	}
 

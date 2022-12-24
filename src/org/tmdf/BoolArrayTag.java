@@ -1,8 +1,10 @@
 package org.tmdf;
 
 /**
- * Type: 17<br>
- * Payload: an ordered array of booleans. The first 4 bytes mean the length of the array (size in bytes equals array size + 4)
+ * 	BoolArrayTag: 17<br>
+ * 	Payload: an ordered array of booleans (boolean is 1 bit). The first 4 bytes mean the 1/8 of length of the array (size in bytes = array size/8 + (4 or 2))<br>
+ * 	The size of the array in bits is always a multiple of 8. If it is not, zero bits are added until the size is a multiple of 8<br>
+ * 	Flag: If true, the size of the array is 2 bytes (no more than 65535*8). Else 4 bytes (does not exceed 2147483647*8)
  */
 public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 

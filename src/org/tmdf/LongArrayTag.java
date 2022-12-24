@@ -5,8 +5,9 @@ import java.util.Arrays;
 import static org.tmdf.ByteBuffersCache.*;
 
 /**
- * Type: 14<br>
- * Payload: an ordered array of eight-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size * 8 + 4)
+ * 	LongArrayTag: 14<br>
+ * 	Payload: an ordered array of eight-byte integers. The first 4 bytes mean the length of the array (size in bytes = array size * 8 + 4)<br>
+ * 	Flag: If true, all values are unsigned, else all values are signed
  */
 public final class LongArrayTag extends NumArrayTag<long[],Long> {
 	private long[] value;

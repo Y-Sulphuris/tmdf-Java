@@ -1,9 +1,9 @@
 package org.tmdf;
 
 /**
- * Type: 7<br>
- * Payload: true or false (1 byte)<br>
- * Immutable
+ * 	BoolTag: 7<br>
+ * 	Payload: none<br>
+ * 	Flag: boolean value of tag (1 if true, 0 if false)
  */
 public final class BoolTag extends Tag<Boolean>{
 	public static BoolTag of(boolean value) {

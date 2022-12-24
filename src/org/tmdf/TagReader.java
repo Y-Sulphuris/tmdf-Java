@@ -6,7 +6,13 @@ import java.util.Arrays;
 import static org.tmdf.TmdfUtils.*;
 
 public final class TagReader {
+	public int counter() {
+		return counter;
+	}
 	private int counter = 0;
+	public void reset() {
+		counter = 0;
+	}
 	private final ByteBuffer data_b;
 
 	public byte[] data() {
@@ -196,24 +202,25 @@ public final class TagReader {
 
 
 	//возвращает указатель на полезную нагрузку тега по имени
-	public int tagPayloadOffset(byte typeID, String name) {
+	public int tagPayloadOffset(int typeID, String name) {
 		int globalCounter = counter;
 		counter = 0;
 
 		String[] names = name.split("/");
-		/*byte[][] nameBytes = new byte[names.length][];
-		for (int i = 0; i < names.length; i++) {
-			nameBytes[i] = TmdfUtils.stringToTMDFNameByteArray(names[i]);
-		}*/
 
 
 		for (int i = 0; i < names.length; i++) {
-			byte id = readByte();
+			byte id;
+			try {
+				id = readByte();
+			} catch (IndexOutOfBoundsException e) {
+				return goToGlobalAndReturnsLocal(globalCounter);
+			}
 			boolean flag = TmdfUtils.getTagFlag(id); //save flag
 			id = TmdfUtils.setTagFlag(id,false); //and turn it off
 
-			Class<?> type = Tag.getType(id);
-			System.out.println(type.getName());
+//			Class<?> type = Tag.getType(id);
+//			System.out.println(type.getName());
 
 			//read name
 			byte nameLength = readByte();
@@ -241,6 +248,57 @@ public final class TagReader {
 
 		goToGlobalAndReturnsLocal(globalCounter);
 		return -1;
+	}
+	public Tag<?> getTag(int typeID, String name) {
+		NamedTag namedTag = getNamedTag(typeID, name);
+		if (namedTag == null)
+			return null;
+		return namedTag.getTag();
+	}
+	public NamedTag getNamedTag(int typeID, String name) {
+		int globalCounter = counter;
+		counter = 0;
+
+		String[] names = name.split("/");
+
+
+		for (int i = 0; i < names.length; i++) {
+			byte id = readByte();
+			boolean flag = TmdfUtils.getTagFlag(id); //save flag
+			id = TmdfUtils.setTagFlag(id,false); //and turn it off
+
+			Class<?> type = Tag.getType(id);
+			System.out.println(type.getName());
+
+			//read name
+			byte nameLength = readByte();
+			final byte[] thisName = new byte[nameLength+1];
+
+			thisName[0] = nameLength;//полный массив имени включая длинну
+			for (int ii = 1; ii < nameLength+1; ii++) {
+				thisName[ii] = readByte();
+			}
+
+			//after reading name
+			if (Arrays.equals(thisName, TmdfUtils.stringToTMDFNameByteArray(names[i]))) { //если имя совпадает с текущим выбраным фрагментом из полного пути
+				if (typeID == id && i == (names.length - 1) ) {
+					counter = counter - nameLength - 1;
+					NamedTag result = nextTag();
+					goToGlobalAndReturnsLocal(globalCounter);
+					return result;
+				} else if (typeID == 10) {//это ещё один tagmap
+					continue;
+				}
+			} else {
+				skipPayload(id,flag);
+				--i;
+				continue;
+			}
+		}
+
+
+		goToGlobalAndReturnsLocal(globalCounter);
+		return null;
 	}
 	private int goToGlobalAndReturnsLocal(int globalCounter) {
 

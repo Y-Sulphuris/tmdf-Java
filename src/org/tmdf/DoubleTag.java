@@ -3,8 +3,9 @@ package org.tmdf;
 import static org.tmdf.ByteBuffersCache.bb8;
 
 /**
- * Type: 6<br>
- * Payload: eight-byte fractional value (8 bytes) — IEEE 754-2008
+ * 	DoubleTag: 6<br>
+ * 	Payload: eight-byte fractional value (8 bytes) - IEEE 754-2008<br>
+ * 	Flag: none
  */
 public final class DoubleTag extends NumTag<Double> {
 	private double value = 0.0;

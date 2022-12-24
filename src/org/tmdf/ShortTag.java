@@ -3,8 +3,9 @@ package org.tmdf;
 
 import static org.tmdf.ByteBuffersCache.bb2;
 /**
- * Type: 2<br>
- * Payload: two-byte integer value (2 byte)
+ * 	ShortTag: 2<br>
+ * 	Payload: two-byte integer value (2 bytes)<br>
+ * 	Flag: true if unsigned, false if not
  */
 public final class ShortTag extends NumTag<Integer> {
 	private short value = 0;

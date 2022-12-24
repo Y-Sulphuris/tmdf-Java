@@ -3,8 +3,9 @@ package org.tmdf;
 import java.util.Arrays;
 
 /**
- * Type: 18<br>
- * Payload: an ordered array of unnamed tags (name = ""). Tags are contained in the array as a whole (Not only payload). The first 4 bytes mean the length of the array (size not defined)
+ * 	TagArray: 18<br>
+ * 	Payload: an ordered array of unnamed tags (name = ""). Tags are contained in the array as a whole (Not only payload). The first 4 bytes mean the length of the array (size not defined)<br>
+ * 	Flag: If true, the size of the array is 2 bytes (no more than 65535). Else 4 bytes (does not exceed 2147483647)
  */
 public final class TagArray extends ArrayTag<Tag<?>[],Tag<?>> {
 	public static TagArray of(Tag<?>... tags) {

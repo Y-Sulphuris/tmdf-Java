@@ -3,8 +3,9 @@ package org.tmdf;
 import java.util.Arrays;
 
 /**
- * Type: 11<br>
- * Payload: an ordered array of one-byte integers. The first 4 bytes mean the length of the array (size in bytes equals array size + 4)
+ * 	ByteArrayTag: 11<br>
+ * 	Payload: an ordered array of one-byte integers. The first 4 bytes mean the length of the array (size in bytes = array size + 4)<br>
+ * 	Flag: If true, all values are unsigned, else all values are signed
  */
 public final class ByteArrayTag extends NumArrayTag<byte[],Byte> {
 	public static ByteArrayTag of(byte... bytes) {
