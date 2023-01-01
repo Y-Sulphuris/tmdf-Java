@@ -1,8 +1,7 @@
 import org.tmdf.*;
 
-import java.util.Arrays;
-
 public class Main {
+
 
 	public static void main(String[] args) {
 		TagMap map = new TagMap();
@@ -16,18 +15,14 @@ public class Main {
 			)
 		);
 		map.put("name_of_paper",new StringUTF16Tag("declaration of Independence"));
-		NamedTag nmap = map.name("Source tag");
+		NamedTag nmap = map.setName("Source tag");
 		System.out.println(nmap.toGenericString());
 		byte[] data = nmap.toByteArray();
-		System.out.println(Arrays.toString(data));
-		TagReader parser = new TagReader(data);
-		System.out.println(parser.nextTag().toGenericString());
-		System.out.println(parser.counter() + (parser.counter() == data.length ?" =" : " != ") + data.length);
 
-
-		System.out.println(new StringUTF16Tag("aaa").name("abc").toGenericString());
-		System.out.println(parser.tagPayloadOffset(19,"Source tag/name_of_paper"));
-		System.out.println(parser.getNamedTag(9,"Source tag/paper").toGenericString());
+		System.out.println(new StringUTF16Tag("aaa").setName("abc").toGenericString());
+		//System.out.println(parser.tagPayloadOffset(19,"Source tag/name_of_paper"));
+		//System.out.println(parser.getNamedTag(9,"Source tag/paper").toGenericString());
+		System.out.println(3 << 3);
 
 	}
 
@@ -63,13 +58,4 @@ public class Main {
 
 
 
-	static void printAsBinary(byte[] bytes) {
-		BoolArrayTag bits = BoolArrayTag.of(bytes);
-		for (int i = 0; i < bits.length(); i++) {
-			if (i % 8 == 0 && i != 0) System.out.print('_');
-			if (i % 64 == 0 && i != 0) System.out.print("__");
-			System.out.print(bits.get(i)?1:0);
-		}
-		System.out.println();
-	}
 }

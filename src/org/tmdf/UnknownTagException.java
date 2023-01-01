@@ -1,6 +1,6 @@
 package org.tmdf;
 
-public final class UnknownTagException extends RuntimeException {
+public final class UnknownTagException extends TmdfException {
 	public UnknownTagException() {
 		super();
 	}

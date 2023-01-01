@@ -37,8 +37,6 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 	private byte[] data;
 
 	public BoolArrayTag(boolean[] value) {
-		setToShort(value.length < Short.MAX_VALUE);
-
 		setValue(value);
 	}
 	public BoolArrayTag(int lengthInBytes) {
@@ -89,7 +87,7 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 
 	@Override
 	public void setValue(boolean[] value) {
-		setToShort(value.length < Short.MAX_VALUE);
+		setToShort(value.length < Short.MAX_VALUE); //if value.length < Short.MAX_VALUE set flag to true
 
 		data = new byte[value.length/8 + (value.length%8==0 ? 0 : 1)];
 		for (int i = 0; i < value.length; i++) {

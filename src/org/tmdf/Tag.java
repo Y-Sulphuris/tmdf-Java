@@ -1,8 +1,6 @@
 package org.tmdf;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 import static org.tmdf.TmdfUtils.*;
@@ -260,6 +258,9 @@ public abstract class Tag<T> implements Cloneable{
 		return bytes;//sum(new byte[]{getID()},nameBytes,payload);
 	}
 
+	public final byte[] toCompressedByteArray(String name) {
+		return compress(toByteArray(name));
+	}
 	/**
 	 * Get only payload of this tag, without type and name data<br>
 	 * (for example: IntTag(4) -> [0,0,0,4])
@@ -300,7 +301,9 @@ public abstract class Tag<T> implements Cloneable{
 	}
 
 
-	public final NamedTag name(String name) {
+	public final NamedTag setName(String name) {
 		return new NamedTag(name,this);
 	}
+
+
 }
