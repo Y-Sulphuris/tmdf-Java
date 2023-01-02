@@ -62,4 +62,9 @@ public final class NamedTag {
     public byte[] toByteArray() {
         return tag.toByteArray(name);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
