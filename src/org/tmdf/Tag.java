@@ -263,9 +263,8 @@ public abstract class Tag<T> implements Cloneable{
 		return bytes;//sum(new byte[]{getID()},nameBytes,payload);
 	}
 
-	@Deprecated
 	public final byte[] toCompressedByteArray(String name) {
-		return null;//compress(toByteArray(name));
+		return compress(toByteArray(name));
 	}
 	/**
 	 * Get only payload of this tag, without type and name data<br>
@@ -273,7 +272,7 @@ public abstract class Tag<T> implements Cloneable{
 	 */
 	protected abstract byte[] getPayload();
 
-	public final File dump(String name, String path, @Deprecated boolean compress) {
+	public final File dump(String name, String path, boolean compress) {
 		File file = new File(path);
 		try {
 			Files.write(file.toPath(),compress ? toCompressedByteArray(name) : toByteArray(name));

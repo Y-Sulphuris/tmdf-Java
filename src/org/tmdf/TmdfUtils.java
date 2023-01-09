@@ -1,10 +1,13 @@
 package org.tmdf;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.Deflater;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import static org.tmdf.ByteBuffersCache.bb2;
 import static org.tmdf.ByteBuffersCache.bb4;
@@ -116,5 +119,42 @@ public final class TmdfUtils {
 
 		return outputStream.toByteArray();
 	}*/
+
+	public static byte[] compress(byte[] data) {
+		byte[] result = new byte[]{};
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
+			GZIPOutputStream gzipOS = new GZIPOutputStream(bos);
+			gzipOS.write(data);
+			gzipOS.close();
+			result = bos.toByteArray();
+			bos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public static byte[] uncompress(byte[] data) {
+		byte[] result = new byte[]{};
+		try  {
+			ByteArrayInputStream bis = new ByteArrayInputStream(data);
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			GZIPInputStream gzipIS = new GZIPInputStream(bis);
+			byte[] buffer = new byte[1024];
+			int len;
+			while ((len = gzipIS.read(buffer)) != -1) {
+				bos.write(buffer, 0, len);
+			}
+			result = bos.toByteArray();
+
+			gzipIS.close();
+			bos.close();
+			bis.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }
 

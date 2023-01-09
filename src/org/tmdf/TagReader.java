@@ -1,20 +1,29 @@
 package org.tmdf;
 
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 import static org.tmdf.TmdfUtils.*;
 
 public final class TagReader {
 
+	public static NamedTag read(File file) {
+		try {
+			return TagReader.read(new DataInputStream(Files.newInputStream(file.toPath())));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static NamedTag read(DataInputStream is) throws IOException {
 		byte type = is.readByte();
-
-		return read(is,type);
+		return read0(is,type);
 	}
-	public static NamedTag read(DataInputStream is, byte first_byte_type_) throws IOException {
+	private static NamedTag read0(DataInputStream is, byte first_byte_type_) throws IOException {
 
 		boolean flag = getTagFlag(first_byte_type_);
 		byte type = setTagFlag(first_byte_type_,false);
@@ -64,7 +73,7 @@ public final class TagReader {
 				TagList list = new TagList();
 				byte next_ = is.readByte();
 				while (next_ != 0) {
-					list.add(read(is,next_).tag);
+					list.add(read0(is,next_).tag);
 					next_ = is.readByte();
 				}
 				return list;
@@ -72,7 +81,7 @@ public final class TagReader {
 				TagMap map = new TagMap();
 				byte next__ = is.readByte();
 				while (next__ != 0) {
-					NamedTag namedTag = read(is,next__);
+					NamedTag namedTag = read0(is,next__);
 					map.put(namedTag.name,namedTag.tag);
 					next__ = is.readByte();
 				}
@@ -174,10 +183,13 @@ public final class TagReader {
 		counter = 0;
 	}
 
-	public TagReader(final byte[] data) {
-		this.data_b = ByteBuffer.wrap(data);
+	public TagReader(final byte[] data, final boolean compressed) {
+		this.data_b = ByteBuffer.wrap(compressed ? TmdfUtils.uncompress(data) : data);
 	}
 
+	public TagReader(final byte[] data) {
+		this(data, false);
+	}
 
 
 	public Tag<?> nextUnnamedTag() {
@@ -201,7 +213,7 @@ public final class TagReader {
 		return new NamedTag(name,tag);
 	}
 
-	private Tag<?> readPayload(byte type, boolean flag) {
+	private Tag<?> readPayload(final byte type, final boolean flag) {
 
 		switch (type) {
 			case 1:
@@ -344,9 +356,12 @@ public final class TagReader {
 
 
 
-	//возвращает указатель на полезную нагрузку тега по имени
+	//todo: возвращает указатель на полезную нагрузку тега по имени
+	/**
+	 * this.data_b = ByteBuffer.wrap(data);
+	 */
 	@Deprecated
-	public int tagPayloadOffset(int typeID, String name) {
+	public int tagPayloadOffset(final int typeID,final String name) {
 		int globalCounter = counter;
 		counter = 0;
 
@@ -394,7 +409,7 @@ public final class TagReader {
 		return -1;
 	}
 	@Deprecated
-	public Tag<?> getTag(int typeID, String name) {
+	public Tag<?> getTag(final int typeID,final String name) {
 		NamedTag namedTag = getNamedTag(typeID, name);
 		if (namedTag == null)
 			return null;
@@ -455,8 +470,6 @@ public final class TagReader {
 		return result;
 	}
 
-	//private static final TagMap map = new TagMap().put("A",new ByteTag(7)).put("B",new StringUTF8Tag("hello world"));
-
 	/**
 	 * <blockquote><pre>
 	 * TagMap("map") = {
@@ -465,7 +478,7 @@ public final class TagReader {
 	 * }</pre></blockquote>
 	 */
 	private static final byte[] testMap = {10, 3, 109, 97, 112, -127, 1, 65, 7, 8, 1, 66, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 0};
-	public static void main(String[] args) {
+	private static void test() {
 		System.out.println(new TagReader(testMap).tagPayloadOffset((byte) 1,"map/A"));
 	}
 

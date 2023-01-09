@@ -1,5 +1,6 @@
 package org.tmdf;
 
+import java.io.File;
 import java.util.Objects;
 
 public final class NamedTag {
@@ -63,8 +64,7 @@ public final class NamedTag {
         return tag.toByteArray(name);
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public File dump(String path, boolean compress) {
+        return tag.dump(name, path, compress);
     }
 }
