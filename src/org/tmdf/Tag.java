@@ -1,6 +1,11 @@
 package org.tmdf;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 import static org.tmdf.TmdfUtils.*;
@@ -258,8 +263,9 @@ public abstract class Tag<T> implements Cloneable{
 		return bytes;//sum(new byte[]{getID()},nameBytes,payload);
 	}
 
+	@Deprecated
 	public final byte[] toCompressedByteArray(String name) {
-		return compress(toByteArray(name));
+		return null;//compress(toByteArray(name));
 	}
 	/**
 	 * Get only payload of this tag, without type and name data<br>
@@ -267,6 +273,15 @@ public abstract class Tag<T> implements Cloneable{
 	 */
 	protected abstract byte[] getPayload();
 
+	public final File dump(String name, String path, @Deprecated boolean compress) {
+		File file = new File(path);
+		try {
+			Files.write(file.toPath(),compress ? toCompressedByteArray(name) : toByteArray(name));
+			return file;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public final boolean equals(Object o) {

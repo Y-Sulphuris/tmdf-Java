@@ -1,11 +1,154 @@
 package org.tmdf;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import static org.tmdf.TmdfUtils.*;
 
 public final class TagReader {
+
+	public static NamedTag read(DataInputStream is) throws IOException {
+		byte type = is.readByte();
+
+		return read(is,type);
+	}
+	public static NamedTag read(DataInputStream is, byte first_byte_type_) throws IOException {
+
+		boolean flag = getTagFlag(first_byte_type_);
+		byte type = setTagFlag(first_byte_type_,false);
+
+		int namelength = Byte.toUnsignedInt(is.readByte());
+		char[] chars = new char[namelength];
+		for (int i = 0; i < namelength; i++) {
+			chars[i] = (char) is.readByte();
+		}
+		String name = new String(chars);
+		Tag<?> tag = readPayload(is, type, flag).setFlag(flag);
+
+		return new NamedTag(name,tag);
+	}
+	private static Tag<?> readPayload(DataInputStream is, byte type, boolean flag) throws IOException {
+		switch (type) {
+			case 1:
+				return new ByteTag(is.readByte());
+			case 2:
+				return new ShortTag(is.readShort());
+			case 3:
+				return new IntTag(is.readInt());
+			case 4:
+				return new LongTag(is.readLong());
+			case 5:
+				return new FloatTag(is.readFloat());
+			case 6:
+				return new DoubleTag(is.readDouble());
+			case 7:
+				return BoolTag.FALSE;
+			case 8:
+				byte[] data = new byte[0];
+
+				byte next = is.readByte();
+				while (next!=0) {
+					data = TmdfUtils.sum(data,new byte[]{next});
+					next = is.readByte();
+				}
+
+				char[] chars = new char[data.length];
+				for (int i = 0; i < data.length; i++) {
+					chars[i] = (char)data[i];
+				}
+
+				return new StringUTF8Tag(new String(chars));
+			case 9:
+				TagList list = new TagList();
+				byte next_ = is.readByte();
+				while (next_ != 0) {
+					list.add(read(is,next_).tag);
+					next_ = is.readByte();
+				}
+				return list;
+			case 10:
+				TagMap map = new TagMap();
+				byte next__ = is.readByte();
+				while (next__ != 0) {
+					NamedTag namedTag = read(is,next__);
+					map.put(namedTag.name,namedTag.tag);
+					next__ = is.readByte();
+				}
+
+				return map;
+			case 11:
+				ByteArrayTag barray = new ByteArrayTag(is.readInt());
+				for (int i = 0; i < barray.length(); i++) {
+					barray.set(i, is.readByte());
+				}
+				return barray;
+			case 12:
+				ShortArrayTag sarray = new ShortArrayTag(is.readInt());
+				for (int i = 0; i < sarray.length(); i++) {
+					sarray.set(i,is.readShort());
+				}
+				return sarray;
+			case 13:
+				IntArrayTag iarray = new IntArrayTag(is.readInt());
+				for (int i = 0; i < iarray.length(); i++) {
+					iarray.set(i,is.readInt());
+				}
+				return iarray;
+			case 14:
+				LongArrayTag larray = new LongArrayTag(is.readInt());
+				for (int i = 0; i < larray.length(); i++) {
+					larray.set(i,is.readLong());
+				}
+				return larray;
+			case 15:
+				FloatArrayTag farray = new FloatArrayTag(is.readInt());
+				for (int i = 0; i <  farray.length(); i++) {
+					farray.set(i,is.readFloat());
+				}
+				return farray;
+			case 16:
+				DoubleArrayTag darray = new DoubleArrayTag(is.readInt());
+				for (int i = 0; i <  darray.length(); i++) {
+					darray.set(i,is.readDouble());
+				}
+				return darray;
+			case 17:
+				byte[] bodata = new byte[flag ? Short.toUnsignedInt(is.readShort()) : is.readInt()];
+				for (int i = 0; i < bodata.length; i++) {
+					bodata[i] = is.readByte();
+				}
+				return new BoolArrayTag(bodata);
+			case 18:
+				TagArray tarray = new TagArray(flag ? Short.toUnsignedInt(is.readShort()) : is.readInt());
+				for (int i = 0; i <  tarray.length(); i++) {
+					tarray.set(i,read(is).tag);
+				}
+				return tarray;
+
+			case 19:
+				char[] cdata = new char[0];
+				char next___ = is.readChar();
+				while (next___ != 0) {
+					cdata = TmdfUtils.sum(cdata,new char[]{next___});
+					next___ = is.readChar();
+				}
+				return new StringUTF16Tag(new String(cdata));
+
+			case 20:
+				CharArrayTag carray = new CharArrayTag(flag ? Short.toUnsignedInt(is.readShort()) : is.readInt());
+				for (int i = 0; i < carray.length(); i++) {
+					carray.set(i,is.readChar());
+				}
+				return carray;
+			default:
+				throw new UnknownTagException();
+		}
+	}
+
+
+
 	public int counter() {
 		return counter;
 	}

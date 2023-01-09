@@ -97,7 +97,7 @@ public final class TmdfUtils {
 
 
 
-	public static byte[] compress(byte[] data) {
+	/*public static byte[] compress(byte[] data) {
 		Deflater deflater = new Deflater();
 		deflater.setInput(data);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
@@ -115,6 +115,6 @@ public final class TmdfUtils {
 		}
 
 		return outputStream.toByteArray();
-	}
+	}*/
 }
 
