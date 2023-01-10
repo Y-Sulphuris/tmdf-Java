@@ -9,7 +9,7 @@ import static org.tmdf.ByteBuffersCache.bb8;
  * 	Payload: an ordered array of eight-byte fractional IEEE 754-2008. The first 4 bytes mean the length of the array (size in bytes = array size * 8 + 4)<br>
  * 	Flag: none
  */
-public final class DoubleArrayTag extends NumArrayTag<double[], Double> {
+public final class DoubleArrayTag extends ArrayTag<double[], Double> {
 	private double[] value;
 
 	public DoubleArrayTag(double... value) {
