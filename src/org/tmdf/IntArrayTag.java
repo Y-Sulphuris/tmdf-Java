@@ -71,7 +71,7 @@ public final class IntArrayTag extends NumArrayTag<int[],Integer> {
 
 
 	@Override
-	public String toString() {
+	public String toContentString() {
 		return isSigned() ? Arrays.toString(value) : toUnsignedString();
 	}
 

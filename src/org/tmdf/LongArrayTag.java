@@ -67,7 +67,7 @@ public final class LongArrayTag extends NumArrayTag<long[],Long> {
 
 
 	@Override
-	public String toString() {
+	public String toContentString() {
 		return isSigned() ? Arrays.toString(value) : toUnsignedString();
 	}
 

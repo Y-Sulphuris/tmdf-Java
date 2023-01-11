@@ -72,7 +72,7 @@ public final class FloatArrayTag extends ArrayTag<float[],Float> {
 
 
 	@Override
-	public String toString() {
+	public String toContentString() {
 		return Arrays.toString(value);
 	}
 

@@ -64,7 +64,7 @@ public final class DoubleArrayTag extends ArrayTag<double[], Double> {
 
 
 	@Override
-	public String toString() {
+	public String toContentString() {
 		return Arrays.toString(value);
 	}
 

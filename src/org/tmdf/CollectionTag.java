@@ -9,4 +9,9 @@ public abstract class CollectionTag<T> extends Tag<T>{
 	protected boolean getFlag() {
 		return false;//flag is unused
 	}
+
+	@Override
+	public final String toString() {
+		return new StringBuilder("{").append(size()).append(" entities}").toString();
+	}
 }

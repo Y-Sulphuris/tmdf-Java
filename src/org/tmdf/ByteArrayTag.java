@@ -62,9 +62,7 @@ public final class ByteArrayTag extends NumArrayTag<byte[],Byte> {
 	}
 
 
-
-	@Override
-	public String toString() {
+	public String toContentString() {
 		return isSigned() ? Arrays.toString(value) : toUnsignedString();
 	}
 

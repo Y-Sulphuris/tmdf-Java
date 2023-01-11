@@ -84,7 +84,7 @@ public final class CharArrayTag extends ArrayTag<char[],Character> {
 
 
 	@Override
-	public String toString() {
+	public String toContentString() {
 		return Arrays.toString(value);
 	}
 

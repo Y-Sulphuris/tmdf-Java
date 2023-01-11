@@ -66,7 +66,7 @@ public final class ShortArrayTag extends NumArrayTag<short[], Short> {
 
 
 	@Override
-	public String toString() {
+	public String toContentString() {
 		return isSigned() ? Arrays.toString(value) : toUnsignedString();
 	}
 

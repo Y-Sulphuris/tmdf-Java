@@ -115,7 +115,7 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 	}
 
 	@Override
-	public String toString() {
+	public String toContentString() {
 		StringBuilder str1 = new StringBuilder();
 		for (int index = 0; index < data.length; index++) {
 			char[] chars1 = Integer.toBinaryString(data[index]).toCharArray();

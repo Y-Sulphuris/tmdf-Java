@@ -76,7 +76,7 @@ public final class TagArray extends ArrayTag<Tag<?>[],Tag<?>> {
 
 
 	@Override
-	public String toString() {
+	public String toContentString() {
 		return Arrays.toString(value);
 	}
 
