@@ -6,11 +6,11 @@ import org.tmdf.Tag;
 
 public final class Debugger {
     @Deprecated
-    public static long heapSizeOf(Tag<?> tag) {
+    public static long heapSizeOf(Tag<?> tag) throws NoClassDefFoundError {
         return ObjectSizeCalculator.getObjectSize(tag);
     }
     @Deprecated
-    public static long heapSizeOf(Tag<?> tag, String name) {
+    public static long heapSizeOf(Tag<?> tag, String name) throws NoClassDefFoundError{
         return ObjectSizeCalculator.getObjectSize(tag) + ObjectSizeCalculator.getObjectSize(name);
     }
     public static long binarySizeOf(Tag<?> tag) {
