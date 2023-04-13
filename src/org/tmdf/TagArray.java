@@ -21,8 +21,7 @@ public final class TagArray extends ArrayTag<Tag<?>[],Tag<?>> {
 	private Tag<?>[] value;
 
 	public TagArray(Tag<?>[] value) {
-		if (value.length<Short.MAX_VALUE) setToShort(true);
-		else setToShort(false);
+		setToShort(value.length < Short.MAX_VALUE);
 		this.value = value;
 	}
 	public TagArray(int index) {
@@ -56,10 +55,6 @@ public final class TagArray extends ArrayTag<Tag<?>[],Tag<?>> {
 		this.value = value;
 	}
 
-	@Override
-	public TagArray clone() {
-		return new TagArray(value.clone()).setToShort(isShort());
-	}
 
 	@Override
 	protected byte[] getPayload() {

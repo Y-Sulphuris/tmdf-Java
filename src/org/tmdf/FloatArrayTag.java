@@ -49,11 +49,6 @@ public final class FloatArrayTag extends ArrayTag<float[],Float> {
 	}
 
 	@Override
-	public FloatArrayTag clone() {
-		return new FloatArrayTag(value.clone());
-	}
-
-	@Override
 	protected byte[] getPayload() {
 		byte[] bytes = new byte[value.length*4+4];
 		{

@@ -32,10 +32,6 @@ public final class ShortTag extends NumTag<Integer> {
 		this.value = value.shortValue();
 	}
 
-	@Override
-	public ShortTag clone() {
-		return (ShortTag) new ShortTag(value).setFlag(getFlag());
-	}
 
 	@Override
 	protected byte[] getPayload() {

@@ -17,11 +17,6 @@ public final class StringUTF8Tag extends StringTag {
 	}
 
 	@Override
-	public StringUTF8Tag clone() {
-		return new StringUTF8Tag(getValue());
-	}
-
-	@Override
 	protected byte[] getPayload() {
 		return (getValue() + '\0').getBytes(StandardCharsets.UTF_8);
 	}

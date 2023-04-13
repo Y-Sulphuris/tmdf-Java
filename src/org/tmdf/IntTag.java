@@ -30,10 +30,6 @@ public final class IntTag extends NumTag<Long> {
 		this.value = Math.toIntExact(value);
 	}
 
-	@Override
-	public IntTag clone() {
-		return (IntTag) new IntTag(value).setFlag(getFlag());
-	}
 
 	@Override
 	public byte[] getPayload() {

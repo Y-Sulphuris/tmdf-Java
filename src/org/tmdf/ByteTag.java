@@ -40,10 +40,6 @@ public final class ByteTag extends NumTag<Integer> {
 		this.value = value.byteValue();
 	}
 
-	@Override
-	public ByteTag clone() {
-		return (ByteTag) new ByteTag(value).setFlag(getFlag());
-	}
 
 	@Override
 	protected byte[] getPayload() {

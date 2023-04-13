@@ -30,11 +30,6 @@ public final class LongTag extends NumTag<Long> {
 	}
 
 	@Override
-	public Tag<Long> clone() {
-		return new LongTag(value).setFlag(getFlag());
-	}
-
-	@Override
 	protected byte[] getPayload() {
 		bb8.putLong(0,value);
 		return new byte[]{

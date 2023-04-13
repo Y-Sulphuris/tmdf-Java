@@ -16,10 +16,6 @@ public final class StringUTF16Tag extends StringTag {
 		super(value);
 	}
 
-	@Override
-	public StringUTF16Tag clone() {
-		return new StringUTF16Tag(getValue());
-	}
 
 	@Override
 	protected byte[] getPayload() {

@@ -41,10 +41,6 @@ public final class DoubleArrayTag extends ArrayTag<double[], Double> {
 		this.value = value;
 	}
 
-	@Override
-	public DoubleArrayTag clone() {
-		return new DoubleArrayTag(value.clone());
-	}
 
 	@Override
 	protected byte[] getPayload() {

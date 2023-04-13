@@ -58,10 +58,6 @@ public final class CharArrayTag extends ArrayTag<char[],Character> {
 		this.value = value;
 	}
 
-	@Override
-	public CharArrayTag clone() {
-		return new CharArrayTag(value.clone());
-	}
 
 	@Override
 	protected byte[] getPayload() {

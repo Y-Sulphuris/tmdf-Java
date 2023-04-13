@@ -48,10 +48,6 @@ public final class IntArrayTag extends NumArrayTag<int[],Integer> {
 		this.value = value;
 	}
 
-	@Override
-	public IntArrayTag clone() {
-		return new IntArrayTag(value.clone());
-	}
 
 	@Override
 	protected byte[] getPayload() {

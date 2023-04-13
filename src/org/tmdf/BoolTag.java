@@ -32,10 +32,6 @@ public final class BoolTag extends Tag<Boolean>{
 		return of(flag);
 	}
 
-	@Override
-	public BoolTag clone() {
-		return this;
-	}
 
 	@Override
 	protected byte[] getPayload() {

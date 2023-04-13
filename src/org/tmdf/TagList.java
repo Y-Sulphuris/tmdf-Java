@@ -57,10 +57,6 @@ public final class TagList extends CollectionTag<ArrayList<Tag<?>>> {
 		this.list = value;
 	}
 
-	@Override
-	public Tag<ArrayList<Tag<?>>> clone() {
-		return new TagList((ArrayList<Tag<?>>) list.clone());
-	}
 
 
 

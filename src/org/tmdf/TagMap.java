@@ -58,10 +58,6 @@ public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
 		this.map = map;
 	}
 
-	@Override
-	public Tag<HashMap<String, Tag<?>>> clone() {
-		return new TagMap((HashMap<String, Tag<?>>) map.clone());
-	}
 
 	@Override
 	protected byte[] getPayload() {

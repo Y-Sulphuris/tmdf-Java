@@ -36,10 +36,6 @@ public final class ByteArrayTag extends NumArrayTag<byte[],Byte> {
 		this.value = value;
 	}
 
-	@Override
-	public ByteArrayTag clone() {
-		return new ByteArrayTag(value.clone());
-	}
 
 	@Override
 	protected byte[] getPayload() {

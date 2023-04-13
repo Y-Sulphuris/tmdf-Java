@@ -29,10 +29,6 @@ public final class FloatTag extends NumTag<Float> {
 		this.value = value;
 	}
 
-	@Override
-	public Tag<Float> clone() {
-		return new FloatTag(value);
-	}
 
 	@Override
 	protected byte[] getPayload() {

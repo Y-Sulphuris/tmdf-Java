@@ -31,10 +31,6 @@ public final class DoubleTag extends NumTag<Double> {
 		this.value = value;
 	}
 
-	@Override
-	public Tag<Double> clone() {
-		return new DoubleTag(value);
-	}
 
 	@Override
 	protected byte[] getPayload() {

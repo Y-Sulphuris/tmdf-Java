@@ -68,11 +68,6 @@ public abstract class Tag<T> implements Cloneable{
 			}
 
 			@Override
-			public Tag<Void> clone() {
-				throw new UnknownTagException("Tag<void>");
-			}
-
-			@Override
 			protected byte[] getPayload() {
 				throw new UnknownTagException("Tag<void>");
 			}
@@ -213,7 +208,14 @@ public abstract class Tag<T> implements Cloneable{
 	public abstract void setValue(T value);
 
 	@Override
-	public abstract Tag<T> clone();
+	@SuppressWarnings("unchecked")
+	public final Tag<T> clone() {
+		try {
+			return (Tag<T>) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
+	}
 
 	/**
 	 * Integer type of tag

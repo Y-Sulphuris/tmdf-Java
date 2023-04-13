@@ -44,10 +44,6 @@ public final class ShortArrayTag extends NumArrayTag<short[], Short> {
 		this.value = value;
 	}
 
-	@Override
-	public ShortArrayTag clone() {
-		return (ShortArrayTag) new ShortArrayTag(value.clone()).setSigned(isSigned());
-	}
 
 	@Override
 	protected byte[] getPayload() {

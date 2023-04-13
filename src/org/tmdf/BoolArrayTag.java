@@ -95,10 +95,6 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 		}
 	}
 
-	@Override
-	public BoolArrayTag clone() {
-		return new BoolArrayTag(data.clone());
-	}
 
 	@Override
 	protected byte[] getPayload() {
@@ -138,4 +134,37 @@ public final class BoolArrayTag extends ArrayTag<boolean[],Boolean> {
 			throw new ArrayIndexOutOfBoundsException(index + " >= " + length);
 	}
 
+
+	public byte[] getData() {
+		return data;
+	}
+	public void or(BoolArrayTag other) {
+		int length = Math.min(data.length,other.data.length);
+		for (int i = 0; i < length; i++) {
+			data[i] = (byte) (data[i] | other.data[i]);
+		}
+	}
+	public static BoolArrayTag or(BoolArrayTag one, BoolArrayTag two) {
+		if (one.length() != two.length()) throw new IllegalArgumentException();
+		byte[] data = new byte[one.data.length];
+		for (int i = 0; i < data.length; i++) {
+			data[i] = (byte) (one.data[i] | two.data[i]);
+		}
+		return new BoolArrayTag(data);
+	}
+
+	public void and(BoolArrayTag other) {
+		int length = Math.min(data.length,other.data.length);
+		for (int i = 0; i < length; i++) {
+			data[i] = (byte) (data[i] & other.data[i]);
+		}
+	}
+	public static BoolArrayTag and(BoolArrayTag one, BoolArrayTag two) {
+		if (one.length() != two.length()) throw new IllegalArgumentException();
+		byte[] data = new byte[one.data.length];
+		for (int i = 0; i < data.length; i++) {
+			data[i] = (byte) (one.data[i] & two.data[i]);
+		}
+		return new BoolArrayTag(data);
+	}
 }
