@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
  */
 public final class StringUTF16Tag extends StringTag {
 	{
-		if (getValue().length()>255) throw new IndexOutOfBoundsException(getValue().length()+"");
+		if (getValue().length()>255) throw new IndexOutOfBoundsException(String.valueOf(getValue().length()));
 	}
 
 	public StringUTF16Tag(String value) {

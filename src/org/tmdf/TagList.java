@@ -11,10 +11,10 @@ import java.util.stream.Stream;
  * 	Payload: unordered array of tags without a name (name = ""). Always null-terminated (size not defined)<br>
  * 	Flag: none
  */
-public final class TagList extends CollectionTag<ArrayList<Tag<?>>> {
-	private ArrayList<Tag<?>> list;
+public final class TagList extends CollectionTag<List<Tag<?>>> implements List<Tag<?>>{
+	private List<Tag<?>> list;
 
-	public TagList(ArrayList<Tag<?>> list) {
+	public TagList(List<Tag<?>> list) {
 		this.list = list;
 	}
 	public TagList() {
@@ -24,10 +24,16 @@ public final class TagList extends CollectionTag<ArrayList<Tag<?>>> {
 		this.list = new ArrayList<>();
 		list.addAll(Arrays.asList(tags));
 	}
-	public TagList add(Tag<?> element) {
+	public TagList addTag(Tag<?> element) {
 		list.add(element);
 		return this;
 	}
+
+	@Override
+	public boolean remove(Object o) {
+		return list.remove(o);
+	}
+
 	public TagList remove(Tag<?> element) {
 		list.remove(element);
 		return this;
@@ -48,12 +54,12 @@ public final class TagList extends CollectionTag<ArrayList<Tag<?>>> {
 	}
 
 	@Override
-	public ArrayList<Tag<?>> getValue() {
+	public List<Tag<?>> getValue() {
 		return list;
 	}
 
 	@Override
-	public void setValue(ArrayList<Tag<?>> value) {
+	public void setValue(List<Tag<?>> value) {
 		this.list = value;
 	}
 
@@ -93,6 +99,11 @@ public final class TagList extends CollectionTag<ArrayList<Tag<?>>> {
 		return list.isEmpty();
 	}
 
+	@Override
+	public boolean contains(Object o) {
+		return list.contains(o);
+	}
+
 	public Iterator<Tag<?>> iterator() {
 		return list.iterator();
 	}
@@ -105,8 +116,16 @@ public final class TagList extends CollectionTag<ArrayList<Tag<?>>> {
 		return list.toArray(a);
 	}
 
+	@Override
+	public boolean add(Tag<?> tag) {
+		return list.add(tag);
+	}
+
 	public boolean containsAll(Collection<?> c) {
 		return list.containsAll(c);
+	}
+	public boolean containsAllHash(Collection<?> c) {
+		return new HashSet<>(list).containsAll(c);
 	}
 
 	public boolean addAll(Collection<? extends Tag<?>> c) {
@@ -147,6 +166,16 @@ public final class TagList extends CollectionTag<ArrayList<Tag<?>>> {
 
 	public Tag<?> remove(int index) {
 		return list.remove(index);
+	}
+
+	@Override
+	public int indexOf(Object o) {
+		return list.indexOf(o);
+	}
+
+	@Override
+	public int lastIndexOf(Object o) {
+		return list.lastIndexOf(o);
 	}
 
 	public int indexOf(Tag<?> o) {

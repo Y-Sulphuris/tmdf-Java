@@ -1,6 +1,6 @@
 package org.tmdf;
 
-public abstract class CollectionTag<T> extends Tag<T>{
+public abstract class CollectionTag<T> extends Tag<T>  {
 	public abstract int size();
 	public abstract void clear();
 	public abstract boolean contains(Tag<?> other);
@@ -12,6 +12,6 @@ public abstract class CollectionTag<T> extends Tag<T>{
 
 	@Override
 	public final String toString() {
-		return new StringBuilder("{").append(size()).append(" entities}").toString();
+		return "{" + size() + " entities}";
 	}
 }

@@ -1,11 +1,10 @@
 package org.tmdf;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 import static org.tmdf.TmdfUtils.*;
@@ -322,4 +321,71 @@ public abstract class Tag<T> implements Cloneable{
 	}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	public static Tag<?> serializeObject(Object object) {
+		int i = 4;
+
+
+
+
+
+		try {
+			Tag<?> res = wrap(object);
+			res.getValue();
+			return res;
+		} catch (Exception e) {
+			if (object == null) return new StringUTF8Tag("[null]");
+			HashSet<Field> fields = new HashSet<>();
+			for (Field f : object.getClass().getDeclaredFields()) {
+				if (!Modifier.isStatic(f.getModifiers()) && !Modifier.isTransient(f.getModifiers())) {
+					fields.add(f);
+				}
+			}
+			for (Field f : object.getClass().getFields()) {
+				if (!Modifier.isStatic(f.getModifiers()) && !Modifier.isTransient(f.getModifiers())) {
+					fields.add(f);
+				}
+			}
+			TagMap map = new TagMap();
+			for (Field f : fields) {
+				NamedTag ttt = fieldToTag(f,object);
+				map.add(ttt);
+				if (ttt.tag.getValue().equals("[???]"))
+					return map;
+			}
+			return map;
+		}
+	}
+	private static NamedTag fieldToTag(Field f,Object object) {
+		f.setAccessible(true);
+		try {
+			String name = f.getName();
+			Tag<?> value;
+			try {
+				if (object.getClass() != f.getType()) value = serializeObject(f.get(object));
+				else value = new StringUTF8Tag("[this]");
+			} catch (StackOverflowError e) {
+				e.printStackTrace();
+				return new NamedTag(name,new StringUTF8Tag("[???]"));
+			}
+			NamedTag nt = new NamedTag(name,value);
+			return nt;
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+
+	}*/
 }

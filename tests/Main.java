@@ -1,13 +1,23 @@
 import org.tmdf.*;
 
+import java.awt.*;
 import java.io.*;
-import java.nio.file.Files;
 
+class TestClass {
+	int v_int = 6;
+	byte abc = 10;
+	TestClass next;
+}
 public class Main {
 
 
 	public static void main(String[] args) throws IOException {
-		TagMap map = new TagMap();
+		//System.out.println(Tag.serializeObject(System.out).toGenericString("Object"));
+		
+
+
+
+		/*TagMap map = new TagMap();
 		map.put("the_one",new IntTag(5).setSigned(false));
 		map.put("paper", new TagList()
 			.add(ByteArrayTag.of(4,3,6))
@@ -22,7 +32,7 @@ public class Main {
 		System.out.println(nmap.toGenericString());
 
 		File file = nmap.dump("/streamTest.tmdf",false);
-		System.out.println(TagReader.read(new DataInputStream(Files.newInputStream(file.toPath()))).toGenericString());
+		System.out.println(TagReader.read(new DataInputStream(Files.newInputStream(file.toPath()))).toGenericString());*/
 	}
 
 

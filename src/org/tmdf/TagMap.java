@@ -10,10 +10,10 @@ import java.util.function.Function;
  * 	Payload: unordered array of named tags. Always null-terminated (size not defined)<br>
  * 	Flag: none
  */
-public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
-	private HashMap<String,Tag<?>> map;
+public final class TagMap extends CollectionTag<Map<String, Tag<?>>> implements Map<String,Tag<?>>{
+	private Map<String,Tag<?>> map;
 
-	public TagMap(HashMap<String, Tag<?>> map) {
+	public TagMap(Map<String, Tag<?>> map) {
 		this.map = map;
 	}
 	public TagMap() {
@@ -29,6 +29,173 @@ public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
 		map.put(name,tag);
 		return this;
 	}
+	public TagMap putByte(String name, byte v) {
+		return put(name,new ByteTag(v));
+	}
+	public TagMap putShort(String name, short v) {
+		return put(name,new ShortTag(v));
+	}
+	public TagMap putInt(String name, int v) {
+		return put(name,new IntTag(v));
+	}
+	public TagMap putLong(String name, long v) {
+		return put(name,new LongTag(v));
+	}
+	public TagMap putFloat(String name, float v) {
+		return put(name,new FloatTag(v));
+	}
+	public TagMap putDouble(String name, double v) {
+		return put(name,new DoubleTag(v));
+	}
+	public TagMap putBoolean(String name, boolean v) {
+		return put(name,BoolTag.of(v));
+	}
+	public TagMap putString(String name, String v) {
+		return put(name,Tag.wrap(v));
+	}
+	public TagMap putList(String name, List<Tag<?>> v) {
+		return put(name,new TagList(v));
+	}
+	public TagMap putMap(String name, Map<String,Tag<?>> v) {
+		return put(name,new TagMap(v));
+	}
+	public TagMap putByteArray(String name, byte[] v) {
+		return put(name,new ByteArrayTag(v));
+	}
+	public TagMap putShortArray(String name, short[] v) {
+		return put(name,new ShortArrayTag(v));
+	}
+	public TagMap putIntArray(String name, int[] v) {
+		return put(name,new IntArrayTag(v));
+	}
+	public TagMap putLongArray(String name, long[] v) {
+		return put(name,new LongArrayTag(v));
+	}
+	public TagMap putFloatArray(String name, float[] v) {
+		return put(name,new FloatArrayTag(v));
+	}
+	public TagMap putDoubleArray(String name, double[] v) {
+		return put(name,new DoubleArrayTag(v));
+	}
+	public TagMap putBooleanArray(String name, boolean[] v) {
+		return put(name,new BoolArrayTag(v));
+	}
+	public TagMap putTagArray(String name, Tag<?>[] v) {
+		return put(name,new TagArray(v));
+	}
+	public TagMap putCharArray(String name, char[] v) {
+		return put(name,new CharArrayTag(v));
+	}
+
+
+	public ByteTag getByte(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof ByteTag) return ((ByteTag) tag);
+		return null;
+	}
+	public ShortTag getShort(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof ShortTag) return ((ShortTag) tag);
+		return null;
+	}
+	public IntTag getInt(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof IntTag) return ((IntTag) tag);
+		return null;
+	}
+	public LongTag getLong(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof LongTag) return ((LongTag) tag);
+		return null;
+	}
+	public FloatTag getFloat(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof FloatTag) return ((FloatTag) tag);
+		return null;
+	}
+	public DoubleTag getDouble(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof DoubleTag) return ((DoubleTag) tag);
+		return null;
+	}
+	public BoolTag getBoolean(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof BoolTag) return ((BoolTag) tag);
+		return null;
+	}
+	public StringTag getString(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof StringTag) return ((StringTag) tag);
+		return null;
+	}
+	public TagList getList(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof TagList) return ((TagList) tag);
+		return null;
+	}
+	public TagMap getMap(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof TagMap) return ((TagMap) tag);
+		return null;
+	}
+	public ByteArrayTag getByteArray(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof ByteArrayTag) return ((ByteArrayTag) tag);
+		return null;
+	}
+	public ShortArrayTag getShortArray(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof ShortArrayTag) return ((ShortArrayTag) tag);
+		return null;
+	}
+	public IntArrayTag getIntArray(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof IntArrayTag) return ((IntArrayTag) tag);
+		return null;
+	}
+	public LongArrayTag getLongArray(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof LongArrayTag) return ((LongArrayTag) tag);
+		return null;
+	}
+	public FloatArrayTag getFloatArray(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof FloatArrayTag) return ((FloatArrayTag) tag);
+		return null;
+	}
+	public DoubleArrayTag getDoubleArray(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof DoubleArrayTag) return ((DoubleArrayTag) tag);
+		return null;
+	}
+	public BoolArrayTag getBooleanArray(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof BoolArrayTag) return ((BoolArrayTag) tag);
+		return null;
+	}
+	public TagArray getTagArray(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof TagArray) return ((TagArray) tag);
+		return null;
+	}
+	public CharArrayTag getCharArray(String name) {
+		Tag<?> tag = get(name);
+		if (tag instanceof CharArrayTag) return ((CharArrayTag) tag);
+		return null;
+	}
+
+
+	@Override
+	public Tag<?> remove(Object key) {
+		return map.remove(key);
+	}
+
+	@Override
+	public void putAll(Map<? extends String, ? extends Tag<?>> m) {
+		map.putAll(m);
+	}
+
+
 	public Tag<?> get(String name) {
 		return map.get(name);
 	}
@@ -49,12 +216,12 @@ public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
 	}
 
 	@Override
-	public HashMap<String, Tag<?>> getValue() {
+	public Map<String, Tag<?>> getValue() {
 		return map;
 	}
 
 	@Override
-	public void setValue(HashMap<String, Tag<?>> map) {
+	public void setValue(Map<String, Tag<?>> map) {
 		this.map = map;
 	}
 
@@ -88,13 +255,25 @@ public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
 		return map.isEmpty();
 	}
 
+	@Override
+	public boolean containsKey(Object key) {
+		return map.containsKey(key);
+	}
+
+	@Override
+	public boolean containsValue(Object value) {
+		return map.containsValue(value);
+	}
+
+	@Override
+	public Tag<?> get(Object key) {
+		return map.get(key);
+	}
+
 	public boolean containsKey(String key) {
 		return map.containsKey(key);
 	}
 
-	public void putAll(Map<String, ? extends Tag<?>> m) {
-		map.putAll(m);
-	}
 
 	public Tag<?> remove(String key) {
 		return map.remove(key);
@@ -150,14 +329,6 @@ public final class TagMap extends CollectionTag<HashMap<String, Tag<?>>> {
 
 	public Tag<?> merge(String key, Tag<?> value, BiFunction<? super Tag<?>, ? super Tag<?>, ? extends Tag<?>> remappingFunction) {
 		return map.merge(key, value, remappingFunction);
-	}
-
-	public void forEach(BiConsumer<String, ? super Tag<?>> action) {
-		map.forEach(action);
-	}
-
-	public void replaceAll(BiFunction<String, ? super Tag<?>, ? extends Tag<?>> function) {
-		map.replaceAll(function);
 	}
 
 
