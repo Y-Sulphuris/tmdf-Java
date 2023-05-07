@@ -24,8 +24,8 @@ public final class TagArray extends ArrayTag<Tag<?>[],Tag<?>> {
 		setToShort(value.length < Short.MAX_VALUE);
 		this.value = value;
 	}
-	public TagArray(int index) {
-		this.value = new Tag<?>[index];
+	public TagArray(int length) {
+		this.value = new Tag<?>[length];
 	}
 
 	@Override

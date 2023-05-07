@@ -1,9 +1,18 @@
 package org.tmdf;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
 public abstract class StringTag extends Tag<String> implements CharSequence{
+
+	public static StringTag wrapString(String s) {
+		if (s.getBytes(StandardCharsets.UTF_8).length == s.length()) {
+			return new StringUTF8Tag(s);
+		} else return new StringUTF16Tag(s);
+	}
+
+
 	private String value;
 	public StringTag(String value) {
 		this.value = value;

@@ -12,7 +12,7 @@ import static org.tmdf.ByteBuffersCache.bb2;
 public final class ShortArrayTag extends NumArrayTag<short[], Short> {
 	private short[] value;
 
-	public ShortArrayTag(short... value) {
+	public ShortArrayTag(short[] value) {
 		this.value = value;
 	}
 

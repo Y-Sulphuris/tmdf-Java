@@ -3,7 +3,6 @@ package org.tmdf;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Objects;
 
@@ -46,29 +45,25 @@ public abstract class Tag<T> implements Cloneable{
 		if (x instanceof char[]) return new CharArrayTag((char[]) x);
 		if (x instanceof Tag<?>[]) return new TagArray((Tag<?>[]) x);
 		if (x instanceof String) {
-			String s = (String) x;
+			String s = (String)x;
 			if (s.contains("\0")) {
 				return new CharArrayTag(s);
-			} else {
-				if (s.getBytes(StandardCharsets.UTF_8).length == s.length()) {
-					return new StringUTF8Tag(s);
-				} else return new StringUTF16Tag(s);
-			}
+			} else return StringTag.wrapString(s);
 		}
 		return new Tag<Void>() {
 			@Override
 			public Void getValue() {
-				throw new UnknownTagException("Tag<void>");
+				throw new UnknownTagException(toString());
 			}
 
 			@Override
 			public void setValue(Void value) {
-				throw new UnknownTagException("Tag<void>");
+				throw new UnknownTagException(toString());
 			}
 
 			@Override
 			protected byte[] getPayload() {
-				throw new UnknownTagException("Tag<void>");
+				throw new UnknownTagException(toString());
 			}
 
 			@Override
@@ -287,8 +282,7 @@ public abstract class Tag<T> implements Cloneable{
 	public final boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
-		Tag<?> tag = (ByteTag) o;
+		Tag<?> tag = (Tag<?>) o;
 		return getValue() == tag.getValue();
 	}
 

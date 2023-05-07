@@ -12,8 +12,11 @@ import static org.tmdf.ByteBuffersCache.bb8;
 public final class DoubleArrayTag extends ArrayTag<double[], Double> {
 	private double[] value;
 
-	public DoubleArrayTag(double... value) {
+	public DoubleArrayTag(double[] value) {
 		this.value = value;
+	}
+	public DoubleArrayTag(int length) {
+		this.value = new double[length];
 	}
 
 	@Override

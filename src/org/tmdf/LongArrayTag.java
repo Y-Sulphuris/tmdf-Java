@@ -12,7 +12,7 @@ import static org.tmdf.ByteBuffersCache.*;
 public final class LongArrayTag extends NumArrayTag<long[],Long> {
 	private long[] value;
 
-	public LongArrayTag(long... value) {
+	public LongArrayTag(long[] value) {
 		this.value = value;
 	}
 	public LongArrayTag(int length) {

@@ -24,8 +24,8 @@ public final class CharArrayTag extends ArrayTag<char[],Character> {
 	public CharArrayTag(char[] value) {
 		this.value = value;
 	}
-	public CharArrayTag(int index) {
-		this.value = new char[index];
+	public CharArrayTag(int length) {
+		this.value = new char[length];
 	}
 	public CharArrayTag(String value) {
 		this.value = value.toCharArray();

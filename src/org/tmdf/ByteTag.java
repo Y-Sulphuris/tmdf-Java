@@ -10,6 +10,9 @@ public final class ByteTag extends NumTag<Integer> {
 	public ByteTag(byte value) {
 		this.value = value;
 	}
+	public ByteTag() {
+		this(0);
+	}
 	public ByteTag(int value) {
 		this(value,value < 0); //if value is positive, set tag to unsigned as default (flag: 1)
 	}
