@@ -29,6 +29,9 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> implements 
 		map.put(name,tag);
 		return this;
 	}
+	public TagMap put(String name, ConvertibleToTag tag) {
+		return put(name,tag.toTag());
+	}
 	public TagMap putByte(String name, byte v) {
 		return put(name,new ByteTag(v));
 	}

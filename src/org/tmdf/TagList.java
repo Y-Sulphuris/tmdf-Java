@@ -28,6 +28,9 @@ public final class TagList extends CollectionTag<List<Tag<?>>> implements List<T
 		list.add(element);
 		return this;
 	}
+	public TagList addTag(ConvertibleToTag element) {
+		return addTag(element.toTag());
+	}
 
 	@Override
 	public boolean remove(Object o) {
@@ -65,12 +68,6 @@ public final class TagList extends CollectionTag<List<Tag<?>>> implements List<T
 
 
 
-
-	/*
-			for (int i = 0; i < entryTag.length; i++) {
-				bytes[offset+i] = entryTag[i];
-			}
-	*/
 	@Override
 	protected byte[] getPayload() {
 		byte[] bytes = new byte[payloadSize()]; //includes a zero at the end, so you do not need to add it separately
