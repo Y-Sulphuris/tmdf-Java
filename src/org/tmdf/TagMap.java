@@ -155,6 +155,27 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> implements 
 		return defaultValue;
 	}
 
+	public boolean getBoolean(String name) {
+		BoolTag tag = getBoolTag(name);
+		if (tag != null) return tag.getValue();
+		return false;
+	}
+	public boolean getBooleanOrDefault(String name, boolean defaultValue) {
+		BoolTag tag = getBoolTag(name);
+		if (tag != null) return tag.getValue();
+		return defaultValue;
+	}
+	public String getString(String name) {
+		StringTag tag = getStringTag(name);
+		if (tag != null) return tag.getValue();
+		return "";
+	}
+	public String getStringOrDefault(String name, String defaultValue) {
+		StringTag tag = getStringTag(name);
+		if (tag != null) return tag.getValue();
+		return defaultValue;
+	}
+
 
 	public ByteTag getByteTag(String name) {
 		Tag<?> tag = get(name);
@@ -186,7 +207,7 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> implements 
 		if (tag instanceof DoubleTag) return ((DoubleTag) tag);
 		return null;
 	}
-	public BoolTag getBooleanTag(String name) {
+	public BoolTag getBoolTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof BoolTag) return ((BoolTag) tag);
 		return null;
@@ -283,7 +304,7 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> implements 
 		if (tag instanceof DoubleTag) return ((DoubleTag) tag);
 		return new DoubleTag();
 	}
-	public BoolTag getBooleanTagOrDefault(String name) {
+	public BoolTag getBoolTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof BoolTag) return ((BoolTag) tag);
 		return BoolTag.FALSE;
@@ -379,7 +400,7 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> implements 
 		if (tag instanceof DoubleTag) return ((DoubleTag) tag);
 		return new DoubleTag(defaultValue);
 	}
-	public BoolTag getBooleanTagOrDefault(String name, boolean defaultValue) {
+	public BoolTag getBoolTagOrDefault(String name, boolean defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof BoolTag) return ((BoolTag) tag);
 		return BoolTag.of(defaultValue);
