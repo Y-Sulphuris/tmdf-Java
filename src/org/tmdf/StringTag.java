@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 public abstract class StringTag extends Tag<String> implements CharSequence{
 
 	public static StringTag wrapString(String s) {
+		if (s.contains("\0")) throw new IllegalArgumentException("String tag cannot contains null chars, use CharArrayTag");
 		if (s.getBytes(StandardCharsets.UTF_8).length == s.length()) {
 			return new StringUTF8Tag(s);
 		} else return new StringUTF16Tag(s);

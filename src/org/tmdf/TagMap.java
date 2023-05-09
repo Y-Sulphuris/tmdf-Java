@@ -1,7 +1,6 @@
 package org.tmdf;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -54,7 +53,7 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> implements 
 		return put(name,BoolTag.of(v));
 	}
 	public TagMap putString(String name, String v) {
-		return put(name,Tag.wrap(v));
+		return put(name,StringTag.wrapString(v));
 	}
 	public TagMap putList(String name, List<Tag<?>> v) {
 		return put(name,new TagList(v));
@@ -90,291 +89,357 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> implements 
 		return put(name,new CharArrayTag(v));
 	}
 
+	public byte getByte(String name) {
+		ByteTag tag = getByteTag(name);
+		if (tag != null) return tag.byteValue();
+		return 0;
+	}
+	public byte getByteOrDefault(String name, byte defaultValue) {
+		ByteTag tag = getByteTag(name);
+		if (tag != null) return tag.byteValue();
+		return defaultValue;
+	}
 
-	public ByteTag getByte(String name) {
+	public short getShort(String name) {
+		ShortTag tag = getShortTag(name);
+		if (tag != null) return tag.shortValue();
+		return 0;
+	}
+	public short getShortOrDefault(String name, short defaultValue) {
+		ShortTag tag = getShortTag(name);
+		if (tag != null) return tag.shortValue();
+		return defaultValue;
+	}
+
+	public int getInt(String name) {
+		IntTag tag = getIntTag(name);
+		if (tag != null) return tag.intValue();
+		return 0;
+	}
+	public int getIntOrDefault(String name, int defaultValue) {
+		IntTag tag = getIntTag(name);
+		if (tag != null) return tag.intValue();
+		return defaultValue;
+	}
+
+	public long getLong(String name) {
+		LongTag tag = getLongTag(name);
+		if (tag != null) return tag.longValue();
+		return 0;
+	}
+	public long getLongOrDefault(String name, long defaultValue) {
+		LongTag tag = getLongTag(name);
+		if (tag != null) return tag.longValue();
+		return defaultValue;
+	}
+
+	public float getFloat(String name) {
+		FloatTag tag = getFloatTag(name);
+		if (tag != null) return tag.floatValue();
+		return 0;
+	}
+	public float getFloatOrDefault(String name, float defaultValue) {
+		FloatTag tag = getFloatTag(name);
+		if (tag != null) return tag.floatValue();
+		return defaultValue;
+	}
+
+	public double getDouble(String name) {
+		DoubleTag tag = getDoubleTag(name);
+		if (tag != null) return tag.doubleValue();
+		return 0;
+	}
+	public double getDoubleOrDefault(String name, double defaultValue) {
+		DoubleTag tag = getDoubleTag(name);
+		if (tag != null) return tag.doubleValue();
+		return defaultValue;
+	}
+
+
+	public ByteTag getByteTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ByteTag) return ((ByteTag) tag);
 		return null;
 	}
-	public ShortTag getShort(String name) {
+	public ShortTag getShortTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ShortTag) return ((ShortTag) tag);
 		return null;
 	}
-	public IntTag getInt(String name) {
+	public IntTag getIntTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof IntTag) return ((IntTag) tag);
 		return null;
 	}
-	public LongTag getLong(String name) {
+	public LongTag getLongTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof LongTag) return ((LongTag) tag);
 		return null;
 	}
-	public FloatTag getFloat(String name) {
+	public FloatTag getFloatTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof FloatTag) return ((FloatTag) tag);
 		return null;
 	}
-	public DoubleTag getDouble(String name) {
+	public DoubleTag getDoubleTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof DoubleTag) return ((DoubleTag) tag);
 		return null;
 	}
-	public BoolTag getBoolean(String name) {
+	public BoolTag getBooleanTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof BoolTag) return ((BoolTag) tag);
 		return null;
 	}
-	public StringTag getString(String name) {
+	public StringTag getStringTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof StringTag) return ((StringTag) tag);
 		return null;
 	}
-	public TagList getList(String name) {
+	public TagList getTagList(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof TagList) return ((TagList) tag);
 		return null;
 	}
-	public TagMap getMap(String name) {
+	public TagMap getTagMap(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof TagMap) return ((TagMap) tag);
 		return null;
 	}
-	public ByteArrayTag getByteArray(String name) {
+	public ByteArrayTag getByteArrayTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ByteArrayTag) return ((ByteArrayTag) tag);
 		return null;
 	}
-	public ShortArrayTag getShortArray(String name) {
+	public ShortArrayTag getShortArrayTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ShortArrayTag) return ((ShortArrayTag) tag);
 		return null;
 	}
-	public IntArrayTag getIntArray(String name) {
+	public IntArrayTag getIntArrayTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof IntArrayTag) return ((IntArrayTag) tag);
 		return null;
 	}
-	public LongArrayTag getLongArray(String name) {
+	public LongArrayTag getLongArrayTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof LongArrayTag) return ((LongArrayTag) tag);
 		return null;
 	}
-	public FloatArrayTag getFloatArray(String name) {
+	public FloatArrayTag getFloatArrayTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof FloatArrayTag) return ((FloatArrayTag) tag);
 		return null;
 	}
-	public DoubleArrayTag getDoubleArray(String name) {
+	public DoubleArrayTag getDoubleArrayTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof DoubleArrayTag) return ((DoubleArrayTag) tag);
 		return null;
 	}
-	public BoolArrayTag getBooleanArray(String name) {
+	public BoolArrayTag getBoolArrayTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof BoolArrayTag) return ((BoolArrayTag) tag);
 		return null;
 	}
-	public TagArray getTagArray(String name) {
+	public TagArray getTagArrayTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof TagArray) return ((TagArray) tag);
 		return null;
 	}
-	public CharArrayTag getCharArray(String name) {
+	public CharArrayTag getCharArrayTag(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof CharArrayTag) return ((CharArrayTag) tag);
 		return null;
 	}
 
 
-	public ByteTag getByteOrEmpty(String name) {
+	public ByteTag getByteTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ByteTag) return ((ByteTag) tag);
 		return new ByteTag();
 	}
-	public ShortTag getShortOrEmpty(String name) {
+	public ShortTag getShortTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ShortTag) return ((ShortTag) tag);
 		return new ShortTag();
 	}
-	public IntTag getIntOrEmpty(String name) {
+	public IntTag getIntTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof IntTag) return ((IntTag) tag);
 		return new IntTag();
 	}
-	public LongTag getLongOrEmpty(String name) {
+	public LongTag getLongTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof LongTag) return ((LongTag) tag);
 		return new LongTag();
 	}
-	public FloatTag getFloatOrEmpty(String name) {
+	public FloatTag getFloatTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof FloatTag) return ((FloatTag) tag);
 		return new FloatTag();
 	}
-	public DoubleTag getDoubleOrEmpty(String name) {
+	public DoubleTag getDoubleTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof DoubleTag) return ((DoubleTag) tag);
 		return new DoubleTag();
 	}
-	public BoolTag getBooleanOrEmpty(String name) {
+	public BoolTag getBooleanTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof BoolTag) return ((BoolTag) tag);
 		return BoolTag.FALSE;
 	}
-	public StringTag getStringOrEmpty(String name) {
+	public StringTag getStringTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof StringTag) return ((StringTag) tag);
 		return new StringUTF16Tag("");
 	}
-	public TagList getListOrEmpty(String name) {
+	public TagList getListTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof TagList) return ((TagList) tag);
 		return new TagList();
 	}
-	public TagMap getMapOrEmpty(String name) {
+	public TagMap getMapTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof TagMap) return ((TagMap) tag);
 		return new TagMap();
 	}
-	public ByteArrayTag getByteArrayOrEmpty(String name) {
+	public ByteArrayTag getByteArrayTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ByteArrayTag) return ((ByteArrayTag) tag);
 		return new ByteArrayTag(0);
 	}
-	public ShortArrayTag getShortArrayOrEmpty(String name) {
+	public ShortArrayTag getShortArrayTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ShortArrayTag) return ((ShortArrayTag) tag);
 		return new ShortArrayTag(0);
 	}
-	public IntArrayTag getIntArrayOrEmpty(String name) {
+	public IntArrayTag getIntArrayTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof IntArrayTag) return ((IntArrayTag) tag);
 		return new IntArrayTag(0);
 	}
-	public LongArrayTag getLongArrayOrEmpty(String name) {
+	public LongArrayTag getLongArrayTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof LongArrayTag) return ((LongArrayTag) tag);
 		return new LongArrayTag(0);
 	}
-	public FloatArrayTag getFloatArrayOrEmpty(String name) {
+	public FloatArrayTag getFloatArrayTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof FloatArrayTag) return ((FloatArrayTag) tag);
 		return new FloatArrayTag(0);
 	}
-	public DoubleArrayTag getDoubleArrayOrEmpty(String name) {
+	public DoubleArrayTag getDoubleArrayTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof DoubleArrayTag) return ((DoubleArrayTag) tag);
 		return new DoubleArrayTag(0);
 	}
-	public BoolArrayTag getBooleanArrayOrEmpty(String name) {
+	public BoolArrayTag getBooleanArrayTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof BoolArrayTag) return ((BoolArrayTag) tag);
 		return new BoolArrayTag(0);
 	}
-	public TagArray getTagArrayOrEmpty(String name) {
+	public TagArray getTagArrayTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof TagArray) return ((TagArray) tag);
 		return new TagArray(0);
 	}
-	public CharArrayTag getCharArrayOrEmpty(String name) {
+	public CharArrayTag getCharArrayTagOrDefault(String name) {
 		Tag<?> tag = get(name);
 		if (tag instanceof CharArrayTag) return ((CharArrayTag) tag);
 		return new CharArrayTag(0);
 	}
 
-	public ByteTag getByteOrDefault(String name, byte defaultValue) {
+	public ByteTag getByteTagOrDefault(String name, byte defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ByteTag) return ((ByteTag) tag);
 		return new ByteTag(defaultValue);
 	}
-	public ShortTag getShortOrDefault(String name, short defaultValue) {
+	public ShortTag getShortTagOrDefault(String name, short defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ShortTag) return ((ShortTag) tag);
 		return new ShortTag(defaultValue);
 	}
-	public IntTag getIntOrDefault(String name, int defaultValue) {
+	public IntTag getIntTagOrDefault(String name, int defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof IntTag) return ((IntTag) tag);
 		return new IntTag(defaultValue);
 	}
-	public LongTag getLongOrDefault(String name, long defaultValue) {
+	public LongTag getLongTagOrDefault(String name, long defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof LongTag) return ((LongTag) tag);
 		return new LongTag(defaultValue);
 	}
-	public FloatTag getFloatOrDefault(String name, float defaultValue) {
+	public FloatTag getFloatTagOrDefault(String name, float defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof FloatTag) return ((FloatTag) tag);
 		return new FloatTag(defaultValue);
 	}
-	public DoubleTag getDoubleOrDefault(String name, double defaultValue) {
+	public DoubleTag getDoubleTagOrDefault(String name, double defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof DoubleTag) return ((DoubleTag) tag);
 		return new DoubleTag(defaultValue);
 	}
-	public BoolTag getBooleanOrDefault(String name, boolean defaultValue) {
+	public BoolTag getBooleanTagOrDefault(String name, boolean defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof BoolTag) return ((BoolTag) tag);
 		return BoolTag.of(defaultValue);
 	}
-	public StringTag getStringOrDefault(String name, String defaultValue) {
+	public StringTag getStringTagOrDefault(String name, String defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof StringTag) return ((StringTag) tag);
 		return StringTag.wrapString(defaultValue);
 	}
-	public TagList getListOrDefault(String name, List<Tag<?>> defaultValue) {
+	public TagList getListTagOrDefault(String name, List<Tag<?>> defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof TagList) return ((TagList) tag);
 		return new TagList(defaultValue);
 	}
-	public TagMap getMapOrDefault(String name, Map<String, Tag<?>> defaultValue) {
+	public TagMap getMapTagOrDefault(String name, Map<String, Tag<?>> defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof TagMap) return ((TagMap) tag);
 		return new TagMap(defaultValue);
 	}
-	public ByteArrayTag getByteArrayOrDefault(String name, byte[] defaultValue) {
+	public ByteArrayTag getByteArrayTagOrDefault(String name, byte[] defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ByteArrayTag) return ((ByteArrayTag) tag);
 		return new ByteArrayTag(defaultValue);
 	}
-	public ShortArrayTag getShortArrayOrDefault(String name, short[] defaultValue) {
+	public ShortArrayTag getShortArrayTagOrDefault(String name, short[] defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof ShortArrayTag) return ((ShortArrayTag) tag);
 		return new ShortArrayTag(defaultValue);
 	}
-	public IntArrayTag getIntArrayOrDefault(String name, int[] defaultValue) {
+	public IntArrayTag getIntArrayTagOrDefault(String name, int[] defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof IntArrayTag) return ((IntArrayTag) tag);
 		return new IntArrayTag(defaultValue);
 	}
-	public LongArrayTag getLongArrayOrDefault(String name, long[] defaultValue) {
+	public LongArrayTag getLongArrayTagOrDefault(String name, long[] defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof LongArrayTag) return ((LongArrayTag) tag);
 		return new LongArrayTag(defaultValue);
 	}
-	public FloatArrayTag getFloatArrayOrDefault(String name, float[] defaultValue) {
+	public FloatArrayTag getFloatArrayTagOrDefault(String name, float[] defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof FloatArrayTag) return ((FloatArrayTag) tag);
 		return new FloatArrayTag(defaultValue);
 	}
-	public DoubleArrayTag getDoubleArrayOrDefault(String name, double[] defaultValue) {
+	public DoubleArrayTag getDoubleArrayTagOrDefault(String name, double[] defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof DoubleArrayTag) return ((DoubleArrayTag) tag);
 		return new DoubleArrayTag(defaultValue);
 	}
-	public BoolArrayTag getBooleanArrayOrDefault(String name, boolean[] defaultValue) {
+	public BoolArrayTag getBooleanArrayTagOrDefault(String name, boolean[] defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof BoolArrayTag) return ((BoolArrayTag) tag);
 		return new BoolArrayTag(defaultValue);
 	}
-	public TagArray getTagArrayOrDefault(String name, Tag<?>[] defaultValue) {
+	public TagArray getTagArrayTagOrDefault(String name, Tag<?>[] defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof TagArray) return ((TagArray) tag);
 		return new TagArray(defaultValue);
 	}
-	public CharArrayTag getCharArrayOrDefault(String name, char[] defaultValue) {
+	public CharArrayTag getCharArrayTagOrDefault(String name, char[] defaultValue) {
 		Tag<?> tag = get(name);
 		if (tag instanceof CharArrayTag) return ((CharArrayTag) tag);
 		return new CharArrayTag(defaultValue);
@@ -491,8 +556,8 @@ public final class TagMap extends CollectionTag<Map<String, Tag<?>>> implements 
 		return map.entrySet();
 	}
 
-	public Tag<?> getOrDefault(String key, Tag<?> defaultValue) {
-		return map.getOrDefault(key, defaultValue);
+	public Tag<?> getTagOrDefault(String key, ConvertibleToTag defaultValue) {
+		return map.getOrDefault(key, defaultValue.toTag());
 	}
 
 	public Tag<?> putIfAbsent(String key, Tag<?> value) {
