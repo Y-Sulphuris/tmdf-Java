@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import static org.tmdf.TmdfUtils.*;
 
-public abstract class Tag<T> implements Cloneable{
+public abstract class Tag<T> implements Cloneable, ConvertibleToTag{
 
 	private boolean flag = false;
 
@@ -50,32 +50,7 @@ public abstract class Tag<T> implements Cloneable{
 				return new CharArrayTag(s);
 			} else return StringTag.wrapString(s);
 		}
-		return new Tag<Void>() {
-			@Override
-			public Void getValue() {
-				throw new UnknownTagException(toString());
-			}
-
-			@Override
-			public void setValue(Void value) {
-				throw new UnknownTagException(toString());
-			}
-
-			@Override
-			protected byte[] getPayload() {
-				throw new UnknownTagException(toString());
-			}
-
-			@Override
-			public String toString() {
-				return "Tag<void>";
-			}
-
-			@Override
-			public int payloadSize() {
-				return 0;
-			}
-		};
+		return null;
 	}
 
 
@@ -314,21 +289,13 @@ public abstract class Tag<T> implements Cloneable{
 		return new NamedTag(name,this);
 	}
 
+	@Override
+	public Tag<?> toTag() {
+		return this;
+	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-/*
+	/*
 	public static Tag<?> serializeObject(Object object) {
 		int i = 4;
 
