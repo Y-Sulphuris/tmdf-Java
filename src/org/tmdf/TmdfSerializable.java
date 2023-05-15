@@ -4,8 +4,9 @@ package org.tmdf;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 
-public interface TmdfSerializable extends ConvertibleToTag {
+public interface TmdfSerializable extends ConvertibleToTagEx {
     @Override
     default TagMap toTag() {
         TagMap map = new TagMap();
@@ -25,7 +26,7 @@ public interface TmdfSerializable extends ConvertibleToTag {
                         throw new RuntimeException(e);
                     }
                     Tag<?> tag = null;
-                    if (fieldValue instanceof ConvertibleToTag) tag = ((ConvertibleToTag) fieldValue).toTag();
+                    if (fieldValue instanceof ConvertibleToTagEx) tag = ((ConvertibleToTagEx) fieldValue).toTag();
                     else tag = Tag.wrap(fieldValue);
 
                     if (tag != null) map.put(tmdfName, tag);
@@ -35,6 +36,7 @@ public interface TmdfSerializable extends ConvertibleToTag {
         } while (currentClass != Object.class && currentClass != null);
         return map;
     }
+    @Override
     default void load(TagMap map) {
         Class<?> currentClass = getClass();
         do {
@@ -48,10 +50,39 @@ public interface TmdfSerializable extends ConvertibleToTag {
 
                     Tag<?> tag = map.get(tmdfName);
                     if (tag != null) {
-                        try {
-                            field.set(this,tag.getValue());// FIXME: 12.05.2023 problematic frame (cant load custom tmdf serializable classes)
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
+                        if (TmdfSerializationHelper.isImplements(field.getType(), ConvertibleToTagEx.class)) {
+                            try {
+                                ((ConvertibleToTagEx)field.get(this)).load((TagMap) tag);
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else if (TmdfSerializationHelper.isInstance(field.getType(),Tag.class)) {
+                            try {
+                                field.set(this,tag);
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            try {
+                                System.out.println(field.getType() + " " + Arrays.toString(field.getType().getInterfaces()));
+                                System.out.println(TmdfSerializationHelper.isInstance(TmdfSerializable.class, ConvertibleToTagEx.class));
+                                if (tag instanceof NumTag<?>) {
+                                    if (field.getType() == byte.class) {
+                                        field.set(this,((NumTag<?>) tag).byteValue());
+                                    }
+                                    if (field.getType() == int.class) {
+                                        field.set(this,((NumTag<?>) tag).intValue());
+                                    }
+                                    if (field.getType() == short.class) {
+                                        field.set(this,((NumTag<?>) tag).shortValue());
+                                    }
+                                    if (field.getType() == long.class) {
+                                        field.set(this,((NumTag<?>) tag).longValue());
+                                    }
+                                } else field.set(this,tag.getValue());
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
 
@@ -73,5 +104,30 @@ class TmdfSerializationHelper {
             }
         }
         return null;
+    }
+    static boolean isInstance(Class<?> cls, final Class<?> target) {
+        if (cls.isInterface()) {
+            return isImplements(cls,target);
+        } else {
+            while (true) {
+                if (cls == target) return true;
+                if (cls == null) return false;
+                cls = cls.getSuperclass();
+            }
+        }
+    }
+    static boolean isImplements(Class<?> cls, Class<?> interf) {
+        while (true) {
+            if (cls == null || cls == Object.class) return false;
+            Class<?>[] interfaces = cls.getInterfaces();
+            if (contains(interfaces,interf)) return true;
+            cls = cls.getSuperclass();
+        }
+    }
+    static boolean contains(Class<?>[] container, Class<?> req) {
+        for (Class<?> obj : container) {
+            if (isInstance(obj,req)) return true;
+        }
+        return false;
     }
 }

@@ -1,17 +1,39 @@
-import org.tmdf.*;
 
-import java.awt.*;
+import org.tmdf.TagMap;
+import org.tmdf.TmdfName;
+import org.tmdf.TmdfSerializable;
+
 import java.io.*;
 
-class TestClass {
+class TestClass implements TmdfSerializable {
+	@TmdfName("v_int")
 	int v_int = 6;
+	@TmdfName("abc")
 	byte abc = 10;
+	@TmdfName("next")
 	TestClass next;
+
+	@Override
+	public String toString() {
+		return "TestClass{" +
+				"v_int=" + v_int +
+				", abc=" + abc +
+				", next=" + next +
+				'}';
+	}
 }
 public class Main {
 
 
 	public static void main(String[] args) throws IOException {
+		TestClass test0 = new TestClass();
+		test0.abc = 4;
+		test0.next = new TestClass();
+		TagMap map = test0.toTag();
+		System.out.println(map.toGenericString("map"));
+		TestClass test = new TestClass();
+		test.load(map);
+		System.out.println(test);
 		//System.out.println(Tag.serializeObject(System.out).toGenericString("Object"));
 		
 
